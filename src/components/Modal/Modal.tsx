@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
@@ -14,6 +14,20 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ onClose, children, title }) => {
 	const modalRoot = document.getElementById('modal-root');
+
+	useEffect(() => {
+		const handleEsc = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				onClose();
+			}
+		};
+
+		document.addEventListener('keydown', handleEsc);
+		return () => {
+			document.removeEventListener('keydown', handleEsc);
+		};
+	}, [onClose]);
+
 	if (!modalRoot) return null;
 
 	return ReactDOM.createPortal(
