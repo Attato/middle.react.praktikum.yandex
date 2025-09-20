@@ -34,7 +34,7 @@ const App = () => {
 	};
 
 	return (
-		<div className="container">
+		<main className="container">
 			<AppHeader />
 
 			<div className={styles.content}>
@@ -50,7 +50,7 @@ const App = () => {
 					/>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 };
 
