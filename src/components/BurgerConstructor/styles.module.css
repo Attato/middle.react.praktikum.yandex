@@ -1,0 +1,52 @@
+.wrapper {
+	margin-top: 100px;
+}
+
+.burgerConstructor {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	max-height: calc(600px + 56px + 40px);
+	overflow-y: auto;
+	margin: 10px 0;
+}
+
+.ingredientWrapper {
+	display: flex;
+	justify-content: flex-start;
+	background-color: transparent;
+	border: 0;
+	cursor: pointer;
+}
+
+.rotated img {
+	transform: rotate(180deg);
+}
+
+.noSelect {
+	user-select: none;
+	width: 100%;
+}
+
+.centerDiv {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.orderSection {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 40px;
+	margin-top: 40px;
+}
+
+.totalContainer {
+	display: flex;
+}
+
+.currencyIcon {
+	width: 36px;
+	height: 36px;
+}

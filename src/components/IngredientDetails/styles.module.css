@@ -1,0 +1,28 @@
+.modalContent {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	max-width: 720px;
+}
+
+.image {
+	object-fit: contain;
+}
+
+.nutritionGrid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+}
+
+.nutritionItem {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-width: 120px;
+}
+
+.nutritionItem p {
+	width: max-content;
+}

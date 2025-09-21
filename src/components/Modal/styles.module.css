@@ -1,0 +1,11 @@
+.modalCloseWrapper {
+	display: flex;
+	align-items: center;
+	height: 64px;
+}
+
+.closeButton {
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+}
