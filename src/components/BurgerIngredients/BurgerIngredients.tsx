@@ -1,53 +1,64 @@
-import { useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-
-import { useIngredients } from './useIngredients';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { scrollToSection, getClosestSection } from './scrollToSection';
 import { RenderCategory } from './renderCategory';
-
+import type { Ingredient } from '../../types';
 import styles from './styles.module.css';
 
-interface BurgerIngredientsProps {
-	onIngredientClick: (ingredient: any) => void;
-}
+const SECTIONS = [
+	{ id: 'buns', label: 'Булки' },
+	{ id: 'sauces', label: 'Соусы' },
+	{ id: 'mains', label: 'Начинки' },
+];
 
-const BurgerIngredients = ({ onIngredientClick }: BurgerIngredientsProps) => {
-	const [current, setCurrent] = useState('buns');
+const BurgerIngredients = () => {
+	const [current, setCurrent] = useState<string>(SECTIONS[0].id);
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { buns, sauces, mains, loading, error } = useIngredients();
+
+	const dispatch = useAppDispatch();
+	const { items, loading, error } = useAppSelector(
+		(state) => state.ingredients
+	);
+
+	useEffect(() => {
+		dispatch(fetchIngredients());
+	}, [dispatch]);
+
+	const data: Record<string, Ingredient[]> = {
+		buns: items.filter((i) => i.type === 'bun'),
+		sauces: items.filter((i) => i.type === 'sauce'),
+		mains: items.filter((i) => i.type === 'main'),
+	};
 
 	const handleScroll = () => {
 		if (!containerRef.current) return;
-		const closest = getClosestSection(containerRef.current, [
-			'buns',
-			'sauces',
-			'mains',
-		]);
-		setCurrent(closest);
+
+		setCurrent(
+			getClosestSection(
+				containerRef.current,
+				SECTIONS.map((s) => s.id)
+			)
+		);
 	};
 
 	if (loading) return <div className={styles.container}>Загрузка...</div>;
 	if (error) return <div className={styles.container}>Ошибка: {error}</div>;
-
-	const tabs = [
-		{ value: 'buns', label: 'Булки' },
-		{ value: 'sauces', label: 'Соусы' },
-		{ value: 'mains', label: 'Начинки' },
-	];
 
 	return (
 		<div className={styles.burgerIngredients}>
 			<p className="text text_type_main-large">Соберите бургер</p>
 
 			<div className={styles.tabsContainer}>
-				{tabs.map((tab) => (
+				{SECTIONS.map(({ id, label }) => (
 					<Tab
-						key={tab.value}
-						value={tab.value}
-						active={current === tab.value}
-						onClick={() => scrollToSection(tab.value, setCurrent)}
+						key={id}
+						value={id}
+						active={current === id}
+						onClick={() => scrollToSection(id, setCurrent)}
 					>
-						{tab.label}
+						{label}
 					</Tab>
 				))}
 			</div>
@@ -57,24 +68,15 @@ const BurgerIngredients = ({ onIngredientClick }: BurgerIngredientsProps) => {
 				ref={containerRef}
 				onScroll={handleScroll}
 			>
-				<RenderCategory
-					id="buns"
-					title="Булки"
-					items={buns}
-					onClick={onIngredientClick}
-				/>
-				<RenderCategory
-					id="sauces"
-					title="Соусы"
-					items={sauces}
-					onClick={onIngredientClick}
-				/>
-				<RenderCategory
-					id="mains"
-					title="Начинки"
-					items={mains}
-					onClick={onIngredientClick}
-				/>
+				{SECTIONS.map(({ id, label }) => (
+					<RenderCategory
+						key={id}
+						id={id}
+						title={label}
+						items={data[id]}
+						onClick={() => {}}
+					/>
+				))}
 			</div>
 		</div>
 	);

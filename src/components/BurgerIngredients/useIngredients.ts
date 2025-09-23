@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Ingredient, fetchIngredients } from './fetchIngredients';
+import { fetchIngredients } from './fetchIngredients';
+import { Ingredient } from '../../types';
 
 export const useIngredients = () => {
 	const [ingredients, setIngredients] = useState<Ingredient[]>([]);
