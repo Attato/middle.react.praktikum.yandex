@@ -1,7 +1,11 @@
 import React, { useRef } from 'react';
-import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+	ConstructorElement,
+	DragIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import type { BurgerFilling } from '../../services/slices/burgerSlice';
+
 import styles from './styles.module.css';
 
 interface FillingItemProps {
@@ -48,31 +52,36 @@ const FillingItem: React.FC<FillingItemProps> = ({
 		},
 	});
 
-	const [{ isDragging }, drag] = useDrag({
+	drop(ref);
+
+	const [, drag] = useDrag({
 		type: 'filling',
 		item: { index },
-		collect: (monitor) => ({ isDragging: monitor.isDragging() }),
 	});
 
-	drag(drop(ref));
-
 	return (
-		<div
-			ref={ref}
-			style={{ opacity: isDragging ? 0.5 : 1 }}
-			className={styles.ingredientWrapper}
-			onClick={onClick}
-		>
-			<ConstructorElement
-				text={item.name}
-				price={item.price}
-				thumbnail={item.image}
-				handleClose={(e?: React.MouseEvent) => {
-					e?.stopPropagation();
-					onRemove(item.uniqueKey);
+		<div ref={ref} className={styles.fillingItem}>
+			<div
+				ref={(node) => {
+					drag(node);
+					drop(node);
 				}}
-				extraClass={styles.noSelect}
-			/>
+			>
+				<DragIcon type="primary" />
+			</div>
+
+			<div onClick={onClick} className={`${styles.clickableWrapper} ml-2`}>
+				<ConstructorElement
+					text={item.name}
+					price={item.price}
+					thumbnail={item.image}
+					handleClose={(e?: React.MouseEvent) => {
+						e?.stopPropagation();
+						onRemove(item.uniqueKey);
+					}}
+					extraClass={styles.noSelect}
+				/>
+			</div>
 		</div>
 	);
 };

@@ -1,6 +1,9 @@
 import { useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+	CurrencyIcon,
+	Counter,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.css';
 import type { Ingredient } from '../../types';
 
@@ -9,12 +12,14 @@ interface CategoryProps {
 	title: string;
 	items: Ingredient[];
 	onClick: (item: Ingredient) => void;
+	counts: Record<string, number>;
 }
 
 const IngredientCard: React.FC<{
 	ingredient: Ingredient;
 	onClick: () => void;
-}> = ({ ingredient, onClick }) => {
+	count?: number;
+}> = ({ ingredient, onClick, count = 0 }) => {
 	const ref = useRef<HTMLDivElement>(null);
 
 	const [, dragRef] = useDrag({
@@ -26,6 +31,7 @@ const IngredientCard: React.FC<{
 
 	return (
 		<div ref={ref} className={styles.ingredientCard} onClick={onClick}>
+			{count > 0 && <Counter count={count} size="default" />}
 			<img
 				src={ingredient.image}
 				alt={ingredient.name}
@@ -47,6 +53,7 @@ export const RenderCategory: React.FC<CategoryProps> = ({
 	title,
 	items,
 	onClick,
+	counts,
 }) => {
 	return (
 		<div className={styles.categorySection}>
@@ -58,6 +65,7 @@ export const RenderCategory: React.FC<CategoryProps> = ({
 					<IngredientCard
 						key={item._id}
 						ingredient={item}
+						count={counts[item._id] || 0}
 						onClick={() => onClick(item)}
 					/>
 				))}

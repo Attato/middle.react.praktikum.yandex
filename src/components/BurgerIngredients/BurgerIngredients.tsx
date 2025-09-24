@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../services/hooks';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { scrollToSection, getClosestSection } from './scrollToSection';
 import { RenderCategory } from './renderCategory';
+import Modal from '../Modal/Modal';
+import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import type { Ingredient } from '../../types';
 import styles from './styles.module.css';
 
@@ -15,12 +17,17 @@ const SECTIONS = [
 
 const BurgerIngredients = () => {
 	const [current, setCurrent] = useState<string>(SECTIONS[0].id);
-	const containerRef = useRef<HTMLDivElement>(null);
+	const [selectedIngredient, setSelectedIngredient] =
+		useState<Ingredient | null>(null);
 
+	const containerRef = useRef<HTMLDivElement>(null);
 	const dispatch = useAppDispatch();
+
 	const { items, loading, error } = useAppSelector(
 		(state) => state.ingredients
 	);
+
+	const { bun, fillings } = useAppSelector((state) => state.burger);
 
 	useEffect(() => {
 		dispatch(fetchIngredients());
@@ -32,15 +39,30 @@ const BurgerIngredients = () => {
 		mains: items.filter((i) => i.type === 'main'),
 	};
 
+	const ingredientCount: Record<string, number> = {};
+	fillings.forEach((i) => {
+		ingredientCount[i._id] = (ingredientCount[i._id] || 0) + 1;
+	});
+	if (bun) {
+		ingredientCount[bun._id] = 2;
+	}
+
 	const handleScroll = () => {
 		if (!containerRef.current) return;
-
 		setCurrent(
 			getClosestSection(
 				containerRef.current,
 				SECTIONS.map((s) => s.id)
 			)
 		);
+	};
+
+	const handleIngredientClick = (ingredient: Ingredient) => {
+		setSelectedIngredient(ingredient);
+	};
+
+	const handleCloseIngredientModal = () => {
+		setSelectedIngredient(null);
 	};
 
 	if (loading) return <div className={styles.container}>Загрузка...</div>;
@@ -74,10 +96,17 @@ const BurgerIngredients = () => {
 						id={id}
 						title={label}
 						items={data[id]}
-						onClick={() => {}}
+						counts={ingredientCount}
+						onClick={handleIngredientClick}
 					/>
 				))}
 			</div>
+
+			{selectedIngredient && (
+				<Modal onClose={handleCloseIngredientModal} title="Детали ингредиента">
+					<IngredientDetails ingredient={selectedIngredient} />
+				</Modal>
+			)}
 		</div>
 	);
 };

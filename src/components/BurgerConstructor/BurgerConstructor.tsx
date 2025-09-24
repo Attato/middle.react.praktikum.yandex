@@ -11,6 +11,7 @@ import {
 	addIngredient,
 	removeFilling,
 	reorderFillings,
+	clearBurger,
 } from '../../services/slices/burgerSlice';
 import { createOrder, clearOrder } from '../../services/slices/orderSlice';
 
@@ -57,6 +58,7 @@ const BurgerConstructor: React.FC = () => {
 
 	const handleIngredientClick = (ingredient: BurgerFilling) =>
 		setSelectedIngredient(ingredient);
+
 	const handleCloseIngredientModal = () => setSelectedIngredient(null);
 
 	const handleOrder = () => {
@@ -71,6 +73,7 @@ const BurgerConstructor: React.FC = () => {
 	const handleCloseOrderModal = () => {
 		setIsOrderModalOpen(false);
 		dispatch(clearOrder());
+		dispatch(clearBurger());
 	};
 
 	const moveItem = (fromIndex: number, toIndex: number) => {
@@ -78,7 +81,7 @@ const BurgerConstructor: React.FC = () => {
 	};
 
 	return (
-		<div ref={dropTargetRef} className={styles.wrapper}>
+		<div ref={dropTargetRef} className="mt-25 pl-4 pr-4 pt-5">
 			{bun ? (
 				<ConstructorElement
 					type="top"
@@ -86,11 +89,11 @@ const BurgerConstructor: React.FC = () => {
 					text={`${bun.name} (верх)`}
 					price={bun.price}
 					thumbnail={bun.image}
-					extraClass={styles.noSelect}
+					extraClass={`${styles.noSelect} ml-8`}
 				/>
 			) : (
 				<div
-					className={`constructor-element constructor-element_pos_top ${styles.centerDiv}`}
+					className={`constructor-element constructor-element_pos_top ${styles.centerDiv} ml-8`}
 				>
 					Здесь могли бы быть ваши булочки
 				</div>
@@ -116,11 +119,11 @@ const BurgerConstructor: React.FC = () => {
 					text={`${bun.name} (низ)`}
 					price={bun.price}
 					thumbnail={bun.image}
-					extraClass={`${styles.rotated} ${styles.noSelect}`}
+					extraClass={`${styles.rotated} ${styles.noSelect} ml-8`}
 				/>
 			) : (
 				<div
-					className={`constructor-element constructor-element_pos_bottom ${styles.centerDiv}`}
+					className={`constructor-element constructor-element_pos_bottom ${styles.centerDiv} ml-8`}
 				>
 					Здесь могли бы быть ваши булочки
 				</div>
