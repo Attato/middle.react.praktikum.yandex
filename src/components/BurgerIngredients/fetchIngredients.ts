@@ -1,26 +1,10 @@
-export interface Ingredient {
-	_id: string;
-	name: string;
-	type: string;
-	proteins: number;
-	fat: number;
-	carbohydrates: number;
-	calories: number;
-	price: number;
-	image: string;
-	image_mobile: string;
-	image_large: string;
-	__v: number;
-}
+import { Ingredient } from '../../types';
+import { BASE_URL } from '../../consts';
+import { checkResponse } from '../../utils/checkResponse';
 
 export const fetchIngredients = async (): Promise<Ingredient[]> => {
-	const response = await fetch(
-		'https://norma.nomoreparties.space/api/ingredients'
-	);
-
-	if (!response.ok) throw new Error('Ошибка при загрузке данных');
-
-	const data = await response.json();
+	const res = await fetch(`${BASE_URL}/ingredients`);
+	const data = await checkResponse<{ data: Ingredient[] }>(res);
 
 	return data.data;
 };
