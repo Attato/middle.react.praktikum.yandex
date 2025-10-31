@@ -1,17 +1,22 @@
 import { useRef } from 'react';
+
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { useDrag } from 'react-dnd';
+
 import {
 	CurrencyIcon,
 	Counter,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+
 import styles from './styles.module.css';
+
 import type { Ingredient } from '../../types';
 
 interface CategoryProps {
 	id: string;
 	title: string;
 	items: Ingredient[];
-	onClick: (item: Ingredient) => void;
 	counts: Record<string, number>;
 }
 
@@ -52,9 +57,17 @@ export const RenderCategory: React.FC<CategoryProps> = ({
 	id,
 	title,
 	items,
-	onClick,
 	counts,
 }) => {
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const handleIngredientClick = (ingredient: Ingredient) => {
+		navigate(`/ingredients/${ingredient._id}`, {
+			state: { background: location },
+		});
+	};
+
 	return (
 		<div className={styles.categorySection}>
 			<h2 id={id} className="text text_type_main-medium">
@@ -66,7 +79,7 @@ export const RenderCategory: React.FC<CategoryProps> = ({
 						key={item._id}
 						ingredient={item}
 						count={counts[item._id] || 0}
-						onClick={() => onClick(item)}
+						onClick={() => handleIngredientClick(item)}
 					/>
 				))}
 			</div>

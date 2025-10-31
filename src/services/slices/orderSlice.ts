@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { BASE_URL } from '../../consts';
-import { checkResponse } from '../../utils/checkResponse';
+
+import { request } from '../../utils/api';
 
 interface OrderState {
 	orderNumber: number | null;
@@ -18,15 +18,21 @@ interface OrderPayload {
 	ingredients: string[];
 }
 
+interface OrderResponse {
+	success: boolean;
+	order: {
+		number: number;
+	};
+}
+
 export const createOrder = createAsyncThunk(
 	'order/createOrder',
 	async (payload: OrderPayload) => {
-		const res = await fetch(`${BASE_URL}/orders`, {
+		const data = await request<OrderResponse>('/orders', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(payload),
 		});
-		const data = await checkResponse<{ order: { number: number } }>(res);
 		return data.order.number;
 	}
 );
@@ -56,7 +62,7 @@ const orderSlice = createSlice({
 			)
 			.addCase(createOrder.rejected, (state, action) => {
 				state.loading = false;
-				state.error = (action.payload as string) || 'Ошибка отправки заказа';
+				state.error = action.error.message || 'Ошибка отправки заказа';
 			});
 	},
 });

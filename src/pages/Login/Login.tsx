@@ -1,4 +1,5 @@
 import { useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
+
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import {
@@ -6,9 +7,8 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import AppLayout from '../../components/AppLayout/AppLayout';
-import { login } from '../../utils/authActions';
-import { clearError } from '../../services/slices/authSlice';
+import { loginUser, clearError } from '../../services/slices/authSlice';
+
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 import styles from './styles.module.css';
@@ -55,99 +55,97 @@ const Login = () => {
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
-		dispatch(login({ email, password }));
+		dispatch(loginUser({ email, password }));
 	};
 
 	return (
-		<AppLayout>
-			<div className={styles.container}>
-				<form className={styles.content} onSubmit={handleSubmit}>
-					<h2 className="text text_type_main-medium mb-6">Вход</h2>
+		<main className={styles.container}>
+			<form className={styles.content} onSubmit={handleSubmit}>
+				<h2 className="text text_type_main-medium mb-6">Вход</h2>
 
-					{error && (
-						<div className={`${styles.error} mb-6`}>
-							<p className="text text_type_main-default">{error}</p>
-						</div>
-					)}
-
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={'email'}
-							placeholder={'E-mail'}
-							onChange={handleEmailChange}
-							value={email}
-							name={'email'}
-							error={false}
-							errorText={'Ошибка'}
-							size={'default'}
-							required
-							disabled={isLoading}
-							{...({} as any)}
-						/>
+				{error && (
+					<div className={`${styles.error} mb-6`}>
+						<p className="text text_type_main-default">{error}</p>
 					</div>
+				)}
 
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={isPasswordVisible ? 'text' : 'password'}
-							placeholder={'Пароль'}
-							onChange={handlePasswordChange}
-							icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
-							value={password}
-							ref={passwordRef}
-							onIconClick={onPasswordIconClick}
-							name={'password'}
-							error={false}
-							errorText={'Ошибка'}
-							size={'default'}
-							required
-							disabled={isLoading}
-							{...({} as any)}
-						/>
-					</div>
-
-					<Button
-						htmlType="submit"
-						type="primary"
-						size="medium"
+				<div className={`${styles.inputContainer} mb-6`}>
+					<Input
+						type={'email'}
+						placeholder={'E-mail'}
+						onChange={handleEmailChange}
+						value={email}
+						name={'email'}
+						error={false}
+						errorText={'Ошибка'}
+						size={'default'}
+						required
 						disabled={isLoading}
-					>
-						{isLoading ? 'Вход...' : 'Войти'}
-					</Button>
+						{...({} as any)}
+					/>
+				</div>
 
-					<div className={styles.authLinks}>
-						<div className={styles.authItem}>
-							<p className="text text_type_main-default text_color_inactive">
-								Вы — новый пользователь?
-							</p>
+				<div className={`${styles.inputContainer} mb-6`}>
+					<Input
+						type={isPasswordVisible ? 'text' : 'password'}
+						placeholder={'Пароль'}
+						onChange={handlePasswordChange}
+						icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
+						value={password}
+						ref={passwordRef}
+						onIconClick={onPasswordIconClick}
+						name={'password'}
+						error={false}
+						errorText={'Ошибка'}
+						size={'default'}
+						required
+						disabled={isLoading}
+						{...({} as any)}
+					/>
+				</div>
 
-							<Button
-								htmlType="button"
-								type="secondary"
-								size="medium"
-								style={{ padding: 0 }}
-							>
-								<Link to="/register">Зарегистрироваться</Link>
-							</Button>
-						</div>
+				<Button
+					htmlType="submit"
+					type="primary"
+					size="medium"
+					disabled={isLoading}
+				>
+					{isLoading ? 'Вход...' : 'Войти'}
+				</Button>
 
-						<div className={styles.authItem}>
-							<p className="text text_type_main-default text_color_inactive">
-								Забыли пароль?
-							</p>
+				<div className={styles.authLinks}>
+					<div className={styles.authItem}>
+						<p className="text text_type_main-default text_color_inactive">
+							Вы — новый пользователь?
+						</p>
 
-							<Button
-								htmlType="button"
-								type="secondary"
-								size="medium"
-								style={{ padding: 0 }}
-							>
-								<Link to="/forgot-password">Восстановить пароль</Link>
-							</Button>
-						</div>
+						<Button
+							htmlType="button"
+							type="secondary"
+							size="medium"
+							style={{ padding: 0 }}
+						>
+							<Link to="/register">Зарегистрироваться</Link>
+						</Button>
 					</div>
-				</form>
-			</div>
-		</AppLayout>
+
+					<div className={styles.authItem}>
+						<p className="text text_type_main-default text_color_inactive">
+							Забыли пароль?
+						</p>
+
+						<Button
+							htmlType="button"
+							type="secondary"
+							size="medium"
+							style={{ padding: 0 }}
+						>
+							<Link to="/forgot-password">Восстановить пароль</Link>
+						</Button>
+					</div>
+				</div>
+			</form>
+		</main>
 	);
 };
 

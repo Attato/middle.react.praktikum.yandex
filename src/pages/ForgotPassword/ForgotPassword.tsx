@@ -6,11 +6,7 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import AppLayout from '../../components/AppLayout/AppLayout';
-
-import { BASE_URL } from '../../consts';
-
-import { checkResponse } from '../../utils/checkResponse';
+import { request } from '../../utils/api';
 
 import styles from './styles.module.css';
 
@@ -32,16 +28,15 @@ const ForgotPassword = () => {
 		setError('');
 
 		try {
-			const response = await fetch(`${BASE_URL}/password-reset`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ email }),
-			});
-
-			const data = await checkResponse<{ success: boolean; message?: string }>(
-				response
+			const data = await request<{ success: boolean; message?: string }>(
+				'/password-reset',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ email }),
+				}
 			);
 
 			if (data.success) {
@@ -62,59 +57,57 @@ const ForgotPassword = () => {
 	};
 
 	return (
-		<AppLayout>
-			<div className={styles.container}>
-				<div className={styles.content}>
-					<h2 className="text text_type_main-medium mb-6">
-						Восстановление пароля
-					</h2>
+		<main className={styles.container}>
+			<div className={styles.content}>
+				<h2 className="text text_type_main-medium mb-6">
+					Восстановление пароля
+				</h2>
 
-					<form onSubmit={handleSubmit}>
-						<div className={`${styles.inputContainer} mb-6`}>
-							<Input
-								type={'email'}
-								placeholder={'Укажите e-mail'}
-								onChange={handleEmailChange}
-								value={email}
-								name={'email'}
-								error={!!error}
-								errorText={error}
-								size={'default'}
-								disabled={isLoading}
-								{...({} as any)}
-							/>
-						</div>
+				<form onSubmit={handleSubmit}>
+					<div className={`${styles.inputContainer} mb-6`}>
+						<Input
+							type={'email'}
+							placeholder={'Укажите e-mail'}
+							onChange={handleEmailChange}
+							value={email}
+							name={'email'}
+							error={!!error}
+							errorText={error}
+							size={'default'}
+							disabled={isLoading}
+							{...({} as any)}
+						/>
+					</div>
 
-						<Button
-							htmlType="submit"
-							type="primary"
-							size="medium"
-							disabled={isLoading || !email}
-						>
-							{isLoading ? 'Отправка...' : 'Восстановить'}
-						</Button>
-					</form>
+					<Button
+						htmlType="submit"
+						type="primary"
+						size="medium"
+						disabled={isLoading || !email}
+					>
+						{isLoading ? 'Отправка...' : 'Восстановить'}
+					</Button>
+				</form>
 
-					<div className={`${styles.authLinks} mt-20`}>
-						<div className={styles.authItem}>
-							<p className="text text_type_main-default text_color_inactive">
-								Вспомнили пароль?
-							</p>
-							<Link to="/login" className={styles.link}>
-								<Button
-									htmlType="button"
-									type="secondary"
-									size="medium"
-									style={{ padding: 0 }}
-								>
-									Войти
-								</Button>
-							</Link>
-						</div>
+				<div className={`${styles.authLinks} mt-20`}>
+					<div className={styles.authItem}>
+						<p className="text text_type_main-default text_color_inactive">
+							Вспомнили пароль?
+						</p>
+						<Link to="/login" className={styles.link}>
+							<Button
+								htmlType="button"
+								type="secondary"
+								size="medium"
+								style={{ padding: 0 }}
+							>
+								Войти
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</div>
-		</AppLayout>
+		</main>
 	);
 };
 

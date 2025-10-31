@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import {
 	ConstructorElement,
 	Button,
@@ -20,24 +22,24 @@ import { createOrder, clearOrder } from '../../services/slices/orderSlice';
 
 import FillingItem from './FillingItem';
 import Modal from '../Modal/Modal';
-import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import OrderDetails from '../OrderDetails/OrderDetails';
 
-import type {
-	BurgerFilling,
-	BurgerState,
-} from '../../services/slices/burgerSlice';
+import type { BurgerState } from '../../services/slices/burgerSlice';
+import { Ingredient } from '../../types';
 
 import styles from './styles.module.css';
 
 const BurgerConstructor: React.FC = () => {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const { bun, fillings } = useAppSelector(
 		(state: { burger: BurgerState }) => state.burger
 	);
 
 	const { orderNumber, loading } = useAppSelector((state) => state.order);
+	const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
 	const dropTargetRef = useRef<HTMLDivElement>(null);
 
@@ -55,30 +57,36 @@ const BurgerConstructor: React.FC = () => {
 	}, [drop]);
 
 	const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
-	const [selectedIngredient, setSelectedIngredient] =
-		useState<BurgerFilling | null>(null);
-	const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
 
 	const totalPrice =
 		(bun ? bun.price * 2 : 0) +
 		fillings.reduce((sum, item) => sum + item.price, 0);
 
-	const handleIngredientClick = (ingredient: BurgerFilling) => {
-		setSelectedIngredient(ingredient);
-		setIsIngredientModalOpen(true);
-
-		window.history.pushState(null, '', `/ingredients/${ingredient._id}`);
-	};
-
-	const handleCloseIngredientModal = () => {
-		setIsIngredientModalOpen(false);
-		setSelectedIngredient(null);
-
-		window.history.pushState(null, '', '/');
+	const handleIngredientClick = (ingredient: Ingredient) => {
+		navigate(`/ingredients/${ingredient._id}`, {
+			state: { background: location },
+		});
 	};
 
 	const handleOrder = () => {
 		if (!bun) return;
+
+		if (!isAuthenticated || !user) {
+			const burgerState = {
+				bun,
+				fillings,
+				totalPrice,
+			};
+			localStorage.setItem('pendingOrder', JSON.stringify(burgerState));
+
+			navigate('/login', {
+				state: {
+					from: '/',
+					message: 'Для оформления заказа необходимо авторизоваться',
+				},
+			});
+			return;
+		}
 
 		const ingredientIds = [bun._id, ...fillings.map((f) => f._id), bun._id];
 		dispatch(createOrder({ ingredients: ingredientIds }));
@@ -90,6 +98,7 @@ const BurgerConstructor: React.FC = () => {
 		setIsOrderModalOpen(false);
 		dispatch(clearOrder());
 		dispatch(clearBurger());
+		localStorage.removeItem('pendingOrder');
 	};
 
 	const moveItem = (fromIndex: number, toIndex: number) => {
@@ -174,12 +183,6 @@ const BurgerConstructor: React.FC = () => {
 					) : (
 						<OrderDetails orderNumber={orderNumber} />
 					)}
-				</Modal>
-			)}
-
-			{isIngredientModalOpen && selectedIngredient && (
-				<Modal onClose={handleCloseIngredientModal} title="Детали ингредиента">
-					<IngredientDetails ingredient={selectedIngredient} />
 				</Modal>
 			)}
 		</div>

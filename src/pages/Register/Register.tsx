@@ -4,10 +4,11 @@ import {
 	Button,
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import AppLayout from '../../components/AppLayout/AppLayout';
-import { register } from '../../utils/authActions';
-import { clearError } from '../../services/slices/authSlice';
+
+import { clearError, registerUser } from '../../services/slices/authSlice';
+
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
+
 import styles from './styles.module.css';
 
 const Register = () => {
@@ -54,100 +55,98 @@ const Register = () => {
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
-		dispatch(register({ name, email, password }));
+		dispatch(registerUser({ name, email, password }));
 	};
 
 	return (
-		<AppLayout>
-			<div className={styles.container}>
-				<form className={styles.content} onSubmit={handleSubmit}>
-					<h2 className="text text_type_main-medium mb-6">Регистрация</h2>
+		<main className={styles.container}>
+			<form className={styles.content} onSubmit={handleSubmit}>
+				<h2 className="text text_type_main-medium mb-6">Регистрация</h2>
 
-					{error && (
-						<div className={`${styles.error} mb-6`}>
-							<p className="text text_type_main-default">{error}</p>
-						</div>
-					)}
-
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={'text'}
-							placeholder={'Имя'}
-							onChange={handleNameChange}
-							value={name}
-							name={'name'}
-							error={false}
-							errorText={'Ошибка'}
-							size={'default'}
-							required
-							disabled={isLoading}
-							{...({} as any)}
-						/>
+				{error && (
+					<div className={`${styles.error} mb-6`}>
+						<p className="text text_type_main-default">{error}</p>
 					</div>
+				)}
 
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={'email'}
-							placeholder={'E-mail'}
-							onChange={handleEmailChange}
-							value={email}
-							name={'email'}
-							error={false}
-							errorText={'Ошибка'}
-							size={'default'}
-							required
-							disabled={isLoading}
-							{...({} as any)}
-						/>
-					</div>
-
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={isPasswordVisible ? 'text' : 'password'}
-							placeholder={'Пароль'}
-							onChange={handlePasswordChange}
-							icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
-							value={password}
-							ref={passwordRef}
-							onIconClick={onPasswordIconClick}
-							name={'password'}
-							error={false}
-							errorText={'Ошибка'}
-							size={'default'}
-							required
-							disabled={isLoading}
-							{...({} as any)}
-						/>
-					</div>
-
-					<Button
-						htmlType="submit"
-						type="primary"
-						size="medium"
+				<div className={`${styles.inputContainer} mb-6`}>
+					<Input
+						type={'text'}
+						placeholder={'Имя'}
+						onChange={handleNameChange}
+						value={name}
+						name={'name'}
+						error={false}
+						errorText={'Ошибка'}
+						size={'default'}
+						required
 						disabled={isLoading}
-					>
-						{isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-					</Button>
+						{...({} as any)}
+					/>
+				</div>
 
-					<div className={styles.authLinks}>
-						<div className={styles.authItem}>
-							<p className="text text_type_main-default text_color_inactive">
-								Уже зарегистрированы?
-							</p>
+				<div className={`${styles.inputContainer} mb-6`}>
+					<Input
+						type={'email'}
+						placeholder={'E-mail'}
+						onChange={handleEmailChange}
+						value={email}
+						name={'email'}
+						error={false}
+						errorText={'Ошибка'}
+						size={'default'}
+						required
+						disabled={isLoading}
+						{...({} as any)}
+					/>
+				</div>
 
-							<Button
-								htmlType="button"
-								type="secondary"
-								size="medium"
-								style={{ padding: 0 }}
-							>
-								<Link to="/login">Войти</Link>
-							</Button>
-						</div>
+				<div className={`${styles.inputContainer} mb-6`}>
+					<Input
+						type={isPasswordVisible ? 'text' : 'password'}
+						placeholder={'Пароль'}
+						onChange={handlePasswordChange}
+						icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
+						value={password}
+						ref={passwordRef}
+						onIconClick={onPasswordIconClick}
+						name={'password'}
+						error={false}
+						errorText={'Ошибка'}
+						size={'default'}
+						required
+						disabled={isLoading}
+						{...({} as any)}
+					/>
+				</div>
+
+				<Button
+					htmlType="submit"
+					type="primary"
+					size="medium"
+					disabled={isLoading}
+				>
+					{isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+				</Button>
+
+				<div className={styles.authLinks}>
+					<div className={styles.authItem}>
+						<p className="text text_type_main-default text_color_inactive">
+							Уже зарегистрированы?
+						</p>
+
+						<Button
+							htmlType="button"
+							type="secondary"
+							size="medium"
+							style={{ padding: 0 }}
+						>
+							<Link to="/login">Войти</Link>
+						</Button>
 					</div>
-				</form>
-			</div>
-		</AppLayout>
+				</div>
+			</form>
+		</main>
 	);
 };
 

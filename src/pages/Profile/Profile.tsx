@@ -2,14 +2,17 @@ import { useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import AppLayout from '../../components/AppLayout/AppLayout';
-
 import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { logout, getProfile, updateProfile } from '../../utils/authActions';
+import {
+	logoutUser,
+	updateUserProfile,
+	getUserProfile,
+} from '../../services/slices/authSlice';
+
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 import styles from './styles.module.css';
@@ -43,7 +46,7 @@ const Profile = () => {
 
 	useEffect(() => {
 		if (!user) {
-			dispatch(getProfile());
+			dispatch(getUserProfile());
 		}
 	}, [dispatch, user]);
 
@@ -71,7 +74,7 @@ const Profile = () => {
 	}, [name, email, password, user]);
 
 	const handleLogout = () => {
-		dispatch(logout()).then((result: any) => {
+		dispatch(logoutUser()).then((result: any) => {
 			if (result?.type === 'auth/logoutSuccess') {
 				navigate('/login');
 			}
@@ -135,7 +138,7 @@ const Profile = () => {
 			updateData.password = password;
 		}
 
-		dispatch(updateProfile(updateData)).then((result: any) => {
+		dispatch(updateUserProfile(updateData)).then((result: any) => {
 			if (result?.type === 'auth/updateProfileSuccess') {
 				setPassword('');
 			}
@@ -143,119 +146,117 @@ const Profile = () => {
 	};
 
 	return (
-		<AppLayout>
-			<div className={styles.container}>
-				<form className={styles.content} onSubmit={handleSubmit}>
-					<div className={styles.leftSide}>
-						{links.map((link) =>
-							link.isLogout ? (
-								<button
-									key="logout"
-									type="button"
-									onClick={handleLogout}
-									className={`text text_type_main-medium text_color_inactive ${styles.logoutButton}`}
-								>
-									{link.text}
-								</button>
-							) : (
-								<Link
-									key={link.to}
-									to={link.to}
-									className={`text text_type_main-medium ${
-										currentPath === link.to
-											? styles.activeLink
-											: 'text_color_inactive'
-									}`}
-								>
-									{link.text}
-								</Link>
-							)
-						)}
+		<main className={styles.container}>
+			<form className={styles.content} onSubmit={handleSubmit}>
+				<div className={styles.leftSide}>
+					{links.map((link) =>
+						link.isLogout ? (
+							<button
+								key="logout"
+								type="button"
+								onClick={handleLogout}
+								className={`text text_type_main-medium text_color_inactive ${styles.logoutButton}`}
+							>
+								{link.text}
+							</button>
+						) : (
+							<Link
+								key={link.to}
+								to={link.to}
+								className={`text text_type_main-medium ${
+									currentPath === link.to
+										? styles.activeLink
+										: 'text_color_inactive'
+								}`}
+							>
+								{link.text}
+							</Link>
+						)
+					)}
 
-						<p className="text text_type_main-default text_color_inactive mt-20">
-							В этом разделе вы можете <br />
-							изменить свои персональные данные
-						</p>
+					<p className="text text_type_main-default text_color_inactive mt-20">
+						В этом разделе вы можете <br />
+						изменить свои персональные данные
+					</p>
+				</div>
+
+				<div className={styles.rightSide}>
+					{error && (
+						<div className={`${styles.error} mb-6`}>
+							<p className="text text_type_main-default">{error}</p>
+						</div>
+					)}
+
+					<div className={`${styles.inputContainer} mb-6`}>
+						<Input
+							type={'text'}
+							placeholder={'Имя'}
+							onChange={handleNameChange}
+							icon={'EditIcon'}
+							value={name}
+							ref={nameRef}
+							onIconClick={onNameIconClick}
+							onBlur={handleNameBlur}
+							disabled={!isEditingName || isLoading}
+							{...({} as any)}
+						/>
 					</div>
 
-					<div className={styles.rightSide}>
-						{error && (
-							<div className={`${styles.error} mb-6`}>
-								<p className="text text_type_main-default">{error}</p>
-							</div>
-						)}
-
-						<div className={`${styles.inputContainer} mb-6`}>
-							<Input
-								type={'text'}
-								placeholder={'Имя'}
-								onChange={handleNameChange}
-								icon={'EditIcon'}
-								value={name}
-								ref={nameRef}
-								onIconClick={onNameIconClick}
-								onBlur={handleNameBlur}
-								disabled={!isEditingName || isLoading}
-								{...({} as any)}
-							/>
-						</div>
-
-						<div className={`${styles.inputContainer} mb-6`}>
-							<Input
-								type={'email'}
-								placeholder={'Логин'}
-								onChange={handleEmailChange}
-								icon={'EditIcon'}
-								value={email}
-								ref={emailRef}
-								onIconClick={onEmailIconClick}
-								onBlur={handleEmailBlur}
-								disabled={!isEditingEmail || isLoading}
-								{...({} as any)}
-							/>
-						</div>
-
-						<div className={`${styles.inputContainer} mb-6`}>
-							<Input
-								type={'password'}
-								placeholder={'Пароль'}
-								onChange={handlePasswordChange}
-								icon={'EditIcon'}
-								value={password}
-								ref={passwordRef}
-								onIconClick={onPasswordIconClick}
-								onBlur={handlePasswordBlur}
-								disabled={!isEditingPassword || isLoading}
-								{...({} as any)}
-							/>
-						</div>
-
-						{hasChanges && (
-							<div className={styles.buttons}>
-								<Button
-									htmlType="button"
-									type="secondary"
-									size="medium"
-									onClick={handleCancel}
-									disabled={isLoading}
-								>
-									Отмена
-								</Button>
-
-								<Button
-									htmlType="submit"
-									type="primary"
-									size="medium"
-									disabled={isLoading}
-								>
-									{isLoading ? 'Сохранение...' : 'Сохранить'}
-								</Button>
-							</div>
-						)}
+					<div className={`${styles.inputContainer} mb-6`}>
+						<Input
+							type={'email'}
+							placeholder={'Логин'}
+							onChange={handleEmailChange}
+							icon={'EditIcon'}
+							value={email}
+							ref={emailRef}
+							onIconClick={onEmailIconClick}
+							onBlur={handleEmailBlur}
+							disabled={!isEditingEmail || isLoading}
+							{...({} as any)}
+						/>
 					</div>
-				</form>
-			</div>
-		</AppLayout>
+
+					<div className={`${styles.inputContainer} mb-6`}>
+						<Input
+							type={'password'}
+							placeholder={'Пароль'}
+							onChange={handlePasswordChange}
+							icon={'EditIcon'}
+							value={password}
+							ref={passwordRef}
+							onIconClick={onPasswordIconClick}
+							onBlur={handlePasswordBlur}
+							disabled={!isEditingPassword || isLoading}
+							{...({} as any)}
+						/>
+					</div>
+
+					{hasChanges && (
+						<div className={styles.buttons}>
+							<Button
+								htmlType="button"
+								type="secondary"
+								size="medium"
+								onClick={handleCancel}
+								disabled={isLoading}
+							>
+								Отмена
+							</Button>
+
+							<Button
+								htmlType="submit"
+								type="primary"
+								size="medium"
+								disabled={isLoading}
+							>
+								{isLoading ? 'Сохранение...' : 'Сохранить'}
+							</Button>
+						</div>
+					)}
+				</div>
+			</form>
+		</main>
 	);
 };
 

@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
+
 import { useAppSelector } from '../../services/hooks';
 
 interface AuthRouteProps {
@@ -10,7 +11,7 @@ const AuthRoute = ({ children }: AuthRouteProps) => {
 	const location = useLocation();
 
 	if (isAuthenticated) {
-		const from = location.state?.from?.pathname || '/';
+		const from = location.state?.from?.pathname || '/profile';
 		return <Navigate to={from} replace />;
 	}
 
