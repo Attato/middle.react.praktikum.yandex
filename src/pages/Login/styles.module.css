@@ -1,0 +1,36 @@
+.container {
+	max-width: 1240px;
+	min-height: calc(100vh - 80px - 88px - 140px);
+	padding: 0 20px;
+	margin: auto;
+	margin: 140px auto 0;
+}
+
+.content {
+	text-align: center;
+	max-width: 480px;
+	margin: auto;
+}
+
+.content a {
+	color: #f2f2f3;
+}
+
+.authLinks {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 80px;
+}
+
+.authItem {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.authItem a {
+	color: #4c4cff;
+	text-decoration: none;
+}

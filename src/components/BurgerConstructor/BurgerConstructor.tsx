@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+
 import {
 	ConstructorElement,
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+
 import { useDrop } from 'react-dnd';
 
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
@@ -13,12 +15,14 @@ import {
 	reorderFillings,
 	clearBurger,
 } from '../../services/slices/burgerSlice';
+
 import { createOrder, clearOrder } from '../../services/slices/orderSlice';
 
 import FillingItem from './FillingItem';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import OrderDetails from '../OrderDetails/OrderDetails';
+
 import type {
 	BurgerFilling,
 	BurgerState,
@@ -28,9 +32,11 @@ import styles from './styles.module.css';
 
 const BurgerConstructor: React.FC = () => {
 	const dispatch = useAppDispatch();
+
 	const { bun, fillings } = useAppSelector(
 		(state: { burger: BurgerState }) => state.burger
 	);
+
 	const { orderNumber, loading } = useAppSelector((state) => state.order);
 
 	const dropTargetRef = useRef<HTMLDivElement>(null);
@@ -51,15 +57,25 @@ const BurgerConstructor: React.FC = () => {
 	const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 	const [selectedIngredient, setSelectedIngredient] =
 		useState<BurgerFilling | null>(null);
+	const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
 
 	const totalPrice =
 		(bun ? bun.price * 2 : 0) +
 		fillings.reduce((sum, item) => sum + item.price, 0);
 
-	const handleIngredientClick = (ingredient: BurgerFilling) =>
+	const handleIngredientClick = (ingredient: BurgerFilling) => {
 		setSelectedIngredient(ingredient);
+		setIsIngredientModalOpen(true);
 
-	const handleCloseIngredientModal = () => setSelectedIngredient(null);
+		window.history.pushState(null, '', `/ingredients/${ingredient._id}`);
+	};
+
+	const handleCloseIngredientModal = () => {
+		setIsIngredientModalOpen(false);
+		setSelectedIngredient(null);
+
+		window.history.pushState(null, '', '/');
+	};
 
 	const handleOrder = () => {
 		if (!bun) return;
@@ -135,6 +151,7 @@ const BurgerConstructor: React.FC = () => {
 						<p className="text text_type_digits-medium">{totalPrice}</p>
 						<CurrencyIcon type="primary" className={styles.currencyIcon} />
 					</div>
+
 					<Button
 						htmlType="button"
 						type="primary"
@@ -160,7 +177,7 @@ const BurgerConstructor: React.FC = () => {
 				</Modal>
 			)}
 
-			{selectedIngredient && (
+			{isIngredientModalOpen && selectedIngredient && (
 				<Modal onClose={handleCloseIngredientModal} title="Детали ингредиента">
 					<IngredientDetails ingredient={selectedIngredient} />
 				</Modal>

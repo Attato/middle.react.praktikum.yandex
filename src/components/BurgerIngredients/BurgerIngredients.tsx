@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+
 import { scrollToSection, getClosestSection } from './scrollToSection';
 import { RenderCategory } from './renderCategory';
+
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
+
 import type { Ingredient } from '../../types';
+
 import styles from './styles.module.css';
 
 const SECTIONS = [
@@ -19,6 +25,7 @@ const BurgerIngredients = () => {
 	const [current, setCurrent] = useState<string>(SECTIONS[0].id);
 	const [selectedIngredient, setSelectedIngredient] =
 		useState<Ingredient | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const dispatch = useAppDispatch();
@@ -59,10 +66,16 @@ const BurgerIngredients = () => {
 
 	const handleIngredientClick = (ingredient: Ingredient) => {
 		setSelectedIngredient(ingredient);
+		setIsModalOpen(true);
+
+		window.history.pushState(null, '', `/ingredients/${ingredient._id}`);
 	};
 
 	const handleCloseIngredientModal = () => {
+		setIsModalOpen(false);
 		setSelectedIngredient(null);
+
+		window.history.pushState(null, '', '/');
 	};
 
 	if (loading) return <div className={styles.container}>Загрузка...</div>;
@@ -102,7 +115,7 @@ const BurgerIngredients = () => {
 				))}
 			</div>
 
-			{selectedIngredient && (
+			{isModalOpen && selectedIngredient && (
 				<Modal onClose={handleCloseIngredientModal} title="Детали ингредиента">
 					<IngredientDetails ingredient={selectedIngredient} />
 				</Modal>
