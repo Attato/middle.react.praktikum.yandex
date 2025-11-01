@@ -28,7 +28,7 @@ const Login = () => {
 
 	const passwordRef = useRef<HTMLInputElement>(null);
 
-	const from = location.state?.from?.pathname || '/profile';
+	const from = location.state?.from?.pathname || '/';
 
 	useEffect(() => {
 		if (isAuthenticated) {
