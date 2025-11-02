@@ -1,29 +1,55 @@
 import { useState } from 'react';
+
+import { Link } from 'react-router-dom';
+
 import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { renderLinks } from './utils/renderLinks';
 import { links } from './utils/links';
 
+import { useAppSelector } from '../../services/hooks';
+
 import styles from './styles.module.css';
 
 const AppHeader = () => {
 	const [hovered, setHovered] = useState<string | null>(null);
+	const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+	const updatedLinks = links.map((link) => {
+		if (link.id === 'profile' && !isAuthenticated) {
+			return {
+				...link,
+				href: '/login',
+			};
+		}
+		return link;
+	});
 
 	return (
 		<header className={styles.header}>
 			<div className={styles.container}>
 				<div className={`${styles.section} ${styles.left}`}>
-					{renderLinks({ links, section: 'left', hovered, setHovered })}
+					{renderLinks({
+						links: updatedLinks,
+						section: 'left',
+						hovered,
+						setHovered,
+					})}
 				</div>
 
 				<div className={`${styles.section} ${styles.center}`}>
-					<a href="/">
+					<Link to="/">
 						<Logo />
-					</a>
+					</Link>
 				</div>
 
 				<div className={`${styles.section}`}>
-					{renderLinks({ links, section: 'right', hovered, setHovered })}
+					{renderLinks({
+						links: updatedLinks,
+						section: 'right',
+						hovered,
+						setHovered,
+					})}
 				</div>
 			</div>
 		</header>

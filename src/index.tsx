@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './services/store';
-import HomePage from './components/App/App';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { BrowserRouter } from 'react-router-dom';
+import App from './components/App/App';
 import './global.css';
 
 const root = ReactDOM.createRoot(
@@ -15,7 +16,9 @@ root.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<DndProvider backend={HTML5Backend}>
-				<HomePage />
+				<BrowserRouter>
+					<App />
+				</BrowserRouter>
 			</DndProvider>
 		</Provider>
 	</React.StrictMode>

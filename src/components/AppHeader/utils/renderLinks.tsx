@@ -1,4 +1,7 @@
 import React from 'react';
+
+import { Link } from 'react-router-dom';
+
 import styles from '../styles.module.css';
 
 export type LinkItem = {
@@ -25,9 +28,9 @@ export function renderLinks({
 	return links
 		.filter((link) => link.section === section)
 		.map(({ id, href, label, Icon }) => (
-			<a
+			<Link
 				key={id}
-				href={href}
+				to={href}
 				onMouseEnter={() => setHovered(id)}
 				onMouseLeave={() => setHovered(null)}
 				className={`text text_type_main-default ${styles.link} ${
@@ -36,6 +39,6 @@ export function renderLinks({
 			>
 				<Icon type={hovered === id ? 'primary' : 'secondary'} />
 				{label}
-			</a>
+			</Link>
 		));
 }

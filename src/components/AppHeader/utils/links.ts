@@ -24,7 +24,7 @@ export const links: LinkItem[] = [
 	{
 		id: 'profile',
 		label: 'Личный кабинет',
-		href: '/',
+		href: '/profile',
 		Icon: ProfileIcon,
 		section: 'right',
 	},

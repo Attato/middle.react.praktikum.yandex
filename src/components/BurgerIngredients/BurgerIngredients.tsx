@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useAppDispatch, useAppSelector } from '../../services/hooks';
-import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+
+import { useAppSelector } from '../../services/hooks';
+
 import { scrollToSection, getClosestSection } from './scrollToSection';
 import { RenderCategory } from './renderCategory';
-import Modal from '../Modal/Modal';
-import IngredientDetails from '../IngredientDetails/IngredientDetails';
+
 import type { Ingredient } from '../../types';
+
 import styles from './styles.module.css';
 
 const SECTIONS = [
@@ -17,21 +19,12 @@ const SECTIONS = [
 
 const BurgerIngredients = () => {
 	const [current, setCurrent] = useState<string>(SECTIONS[0].id);
-	const [selectedIngredient, setSelectedIngredient] =
-		useState<Ingredient | null>(null);
-
 	const containerRef = useRef<HTMLDivElement>(null);
-	const dispatch = useAppDispatch();
 
 	const { items, loading, error } = useAppSelector(
 		(state) => state.ingredients
 	);
-
 	const { bun, fillings } = useAppSelector((state) => state.burger);
-
-	useEffect(() => {
-		dispatch(fetchIngredients());
-	}, [dispatch]);
 
 	const data: Record<string, Ingredient[]> = {
 		buns: items.filter((i) => i.type === 'bun'),
@@ -55,14 +48,6 @@ const BurgerIngredients = () => {
 				SECTIONS.map((s) => s.id)
 			)
 		);
-	};
-
-	const handleIngredientClick = (ingredient: Ingredient) => {
-		setSelectedIngredient(ingredient);
-	};
-
-	const handleCloseIngredientModal = () => {
-		setSelectedIngredient(null);
 	};
 
 	if (loading) return <div className={styles.container}>Загрузка...</div>;
@@ -97,16 +82,9 @@ const BurgerIngredients = () => {
 						title={label}
 						items={data[id]}
 						counts={ingredientCount}
-						onClick={handleIngredientClick}
 					/>
 				))}
 			</div>
-
-			{selectedIngredient && (
-				<Modal onClose={handleCloseIngredientModal} title="Детали ингредиента">
-					<IngredientDetails ingredient={selectedIngredient} />
-				</Modal>
-			)}
 		</div>
 	);
 };

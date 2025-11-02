@@ -1,14 +1,27 @@
 import React from 'react';
+
+import { useParams } from 'react-router-dom';
+
+import { useAppSelector } from '../../services/hooks';
+
 import { Ingredient } from '../../types';
+
 import styles from './styles.module.css';
 
-interface IngredientDetailsProps {
-	ingredient: Ingredient;
-}
+const IngredientDetails: React.FC = () => {
+	const { id } = useParams<{ id: string }>();
+	const { items } = useAppSelector((state) => state.ingredients);
 
-const IngredientDetails: React.FC<IngredientDetailsProps> = ({
-	ingredient,
-}) => {
+	const ingredient = items.find((item: Ingredient) => item._id === id);
+
+	if (!ingredient) {
+		return (
+			<div className={styles.modalContent}>
+				<p className="text text_type_main-medium">Ингредиент не найден</p>
+			</div>
+		);
+	}
+
 	const nutrition = [
 		{ label: 'Калории, ккал', value: ingredient.calories },
 		{ label: 'Белки, г', value: ingredient.proteins },

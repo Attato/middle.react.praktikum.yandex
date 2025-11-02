@@ -12,3 +12,7 @@ body {
 	margin: auto;
 	padding: 40px 16px 40px 16px;
 }
+
+a {
+	text-decoration: none;
+}
