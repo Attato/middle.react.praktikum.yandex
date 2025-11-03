@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './services/store';
@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-	<React.StrictMode>
+	<StrictMode>
 		<Provider store={store}>
 			<DndProvider backend={HTML5Backend}>
 				<BrowserRouter>
@@ -21,5 +21,5 @@ root.render(
 				</BrowserRouter>
 			</DndProvider>
 		</Provider>
-	</React.StrictMode>
+	</StrictMode>
 );

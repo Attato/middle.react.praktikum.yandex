@@ -8,12 +8,6 @@ interface OrderState {
 	error: string | null;
 }
 
-const initialState: OrderState = {
-	orderNumber: null,
-	loading: false,
-	error: null,
-};
-
 interface OrderPayload {
 	ingredients: string[];
 }
@@ -24,6 +18,12 @@ interface OrderResponse {
 		number: number;
 	};
 }
+
+const initialState: OrderState = {
+	orderNumber: null,
+	loading: false,
+	error: null,
+};
 
 export const createOrder = createAsyncThunk(
 	'order/createOrder',

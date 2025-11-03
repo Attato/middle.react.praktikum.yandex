@@ -1,4 +1,5 @@
 import { BASE_URL } from '../consts';
+import { ISuccessResponse } from '../services/types/authTypes';
 
 async function checkResponse<T>(res: Response): Promise<T> {
 	if (!res.ok) {
@@ -8,14 +9,14 @@ async function checkResponse<T>(res: Response): Promise<T> {
 	return res.json();
 }
 
-const checkSuccess = <T>(res: any): T => {
+const checkSuccess = <T extends ISuccessResponse>(res: T): T => {
 	if (res && res.success) {
 		return res;
 	}
 	throw new Error(`Ответ не success: ${res}`);
 };
 
-export const request = <T>(
+export const request = <T extends ISuccessResponse>(
 	endpoint: string,
 	options?: RequestInit
 ): Promise<T> => {

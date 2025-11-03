@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef, FC, MouseEvent } from 'react';
 import {
 	ConstructorElement,
 	DragIcon,
@@ -20,7 +20,7 @@ interface DragItem {
 	index: number;
 }
 
-const FillingItem: React.FC<FillingItemProps> = ({
+const FillingItem: FC<FillingItemProps> = ({
 	item,
 	index,
 	moveItem,
@@ -75,7 +75,7 @@ const FillingItem: React.FC<FillingItemProps> = ({
 					text={item.name}
 					price={item.price}
 					thumbnail={item.image}
-					handleClose={(e?: React.MouseEvent) => {
+					handleClose={(e?: MouseEvent) => {
 						e?.stopPropagation();
 						onRemove(item.uniqueKey);
 					}}

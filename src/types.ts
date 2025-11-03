@@ -1,3 +1,7 @@
+import { ComponentProps } from 'react';
+
+import { Input } from '@ya.praktikum/react-developer-burger-ui-components';
+
 export interface Ingredient {
 	_id: string;
 	name: string;
@@ -13,3 +17,8 @@ export interface Ingredient {
 	__v: number;
 	uniqueKey: string;
 }
+
+export type InputProps = Omit<
+	ComponentProps<typeof Input>,
+	'type' | 'value' | 'onChange'
+>;

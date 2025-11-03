@@ -6,6 +6,9 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { InputProps } from '../../types';
+
+import { ISuccessResponse } from '../../services/types/authTypes';
 import { request } from '../../utils/api';
 
 import styles from './styles.module.css';
@@ -28,16 +31,13 @@ const ForgotPassword = () => {
 		setError('');
 
 		try {
-			const data = await request<{ success: boolean; message?: string }>(
-				'/password-reset',
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ email }),
-				}
-			);
+			const data = await request<ISuccessResponse>('/password-reset', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email }),
+			});
 
 			if (data.success) {
 				localStorage.setItem('resetPasswordAllowed', 'true');
@@ -75,7 +75,7 @@ const ForgotPassword = () => {
 							errorText={error}
 							size={'default'}
 							disabled={isLoading}
-							{...({} as any)}
+							{...({} as InputProps)}
 						/>
 					</div>
 

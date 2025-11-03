@@ -7,6 +7,8 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { InputProps } from '../../types';
+
 import {
 	logoutUser,
 	updateUserProfile,
@@ -16,6 +18,12 @@ import {
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 import styles from './styles.module.css';
+
+interface ProfileUpdateData {
+	name: string;
+	email: string;
+	password?: string;
+}
 
 const Profile = () => {
 	const location = useLocation();
@@ -74,7 +82,7 @@ const Profile = () => {
 	}, [name, email, password, user]);
 
 	const handleLogout = () => {
-		dispatch(logoutUser()).then((result: any) => {
+		dispatch(logoutUser()).then((result) => {
 			if (result?.type === 'auth/logoutSuccess') {
 				navigate('/login');
 			}
@@ -129,7 +137,7 @@ const Profile = () => {
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 
-		const updateData: { name: string; email: string; password?: string } = {
+		const updateData: ProfileUpdateData = {
 			name,
 			email,
 		};
@@ -138,7 +146,7 @@ const Profile = () => {
 			updateData.password = password;
 		}
 
-		dispatch(updateUserProfile(updateData)).then((result: any) => {
+		dispatch(updateUserProfile(updateData)).then((result) => {
 			if (result?.type === 'auth/updateProfileSuccess') {
 				setPassword('');
 			}
@@ -198,7 +206,7 @@ const Profile = () => {
 							onIconClick={onNameIconClick}
 							onBlur={handleNameBlur}
 							disabled={!isEditingName || isLoading}
-							{...({} as any)}
+							{...({} as InputProps)}
 						/>
 					</div>
 
@@ -213,7 +221,7 @@ const Profile = () => {
 							onIconClick={onEmailIconClick}
 							onBlur={handleEmailBlur}
 							disabled={!isEditingEmail || isLoading}
-							{...({} as any)}
+							{...({} as InputProps)}
 						/>
 					</div>
 
@@ -228,7 +236,7 @@ const Profile = () => {
 							onIconClick={onPasswordIconClick}
 							onBlur={handlePasswordBlur}
 							disabled={!isEditingPassword || isLoading}
-							{...({} as any)}
+							{...({} as InputProps)}
 						/>
 					</div>
 

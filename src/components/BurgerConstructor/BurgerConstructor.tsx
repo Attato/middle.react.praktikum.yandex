@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, FC } from 'react';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -24,29 +24,37 @@ import FillingItem from './FillingItem';
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
 
-import type { BurgerState } from '../../services/slices/burgerSlice';
+import type { RootState } from '../../services/store';
 import { Ingredient } from '../../types';
 
 import styles from './styles.module.css';
 
-const BurgerConstructor: React.FC = () => {
+interface DraggedIngredient {
+	type: 'ingredient';
+	id: string;
+	ingredient: Ingredient;
+}
+
+const BurgerConstructor: FC = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const { bun, fillings } = useAppSelector(
-		(state: { burger: BurgerState }) => state.burger
-	);
+	const { bun, fillings } = useAppSelector((state: RootState) => state.burger);
 
-	const { orderNumber, loading } = useAppSelector((state) => state.order);
-	const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+	const { orderNumber, loading } = useAppSelector(
+		(state: RootState) => state.order
+	);
+	const { user, isAuthenticated } = useAppSelector(
+		(state: RootState) => state.auth
+	);
 
 	const dropTargetRef = useRef<HTMLDivElement>(null);
 
-	const [, drop] = useDrop({
+	const [, drop] = useDrop<DraggedIngredient, void, unknown>({
 		accept: 'ingredient',
-		drop: (item: any) => {
-			dispatch(addIngredient(item));
+		drop: (item) => {
+			dispatch(addIngredient(item.ingredient));
 		},
 	});
 
@@ -56,19 +64,19 @@ const BurgerConstructor: React.FC = () => {
 		}
 	}, [drop]);
 
-	const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+	const [isOrderModalOpen, setIsOrderModalOpen] = useState<boolean>(false);
 
-	const totalPrice =
+	const totalPrice: number =
 		(bun ? bun.price * 2 : 0) +
-		fillings.reduce((sum, item) => sum + item.price, 0);
+		fillings.reduce((sum: number, item) => sum + item.price, 0);
 
-	const handleIngredientClick = (ingredient: Ingredient) => {
+	const handleIngredientClick = (ingredient: Ingredient): void => {
 		navigate(`/ingredients/${ingredient._id}`, {
 			state: { background: location },
 		});
 	};
 
-	const handleOrder = () => {
+	const handleOrder = (): void => {
 		if (!bun) return;
 
 		if (!isAuthenticated || !user) {
@@ -88,22 +96,28 @@ const BurgerConstructor: React.FC = () => {
 			return;
 		}
 
-		const ingredientIds = [bun._id, ...fillings.map((f) => f._id), bun._id];
+		const ingredientIds: string[] = [
+			bun._id,
+			...fillings.map((f) => f._id),
+			bun._id,
+		];
 		dispatch(createOrder({ ingredients: ingredientIds }));
 
 		setIsOrderModalOpen(true);
 	};
 
-	const handleCloseOrderModal = () => {
+	const handleCloseOrderModal = (): void => {
 		setIsOrderModalOpen(false);
 		dispatch(clearOrder());
 		dispatch(clearBurger());
 		localStorage.removeItem('pendingOrder');
 	};
 
-	const moveItem = (fromIndex: number, toIndex: number) => {
+	const moveItem = (fromIndex: number, toIndex: number): void => {
 		dispatch(reorderFillings({ fromIndex, toIndex }));
 	};
+
+	const hasIngredients: boolean = totalPrice > 0;
 
 	return (
 		<div ref={dropTargetRef} className="mt-25 pl-4 pr-4 pt-5">
@@ -131,7 +145,7 @@ const BurgerConstructor: React.FC = () => {
 						item={item}
 						index={index}
 						moveItem={moveItem}
-						onRemove={(key) => dispatch(removeFilling(key))}
+						onRemove={(key: string) => dispatch(removeFilling(key))}
 						onClick={() => handleIngredientClick(item)}
 					/>
 				))}
@@ -154,7 +168,7 @@ const BurgerConstructor: React.FC = () => {
 				</div>
 			)}
 
-			{totalPrice > 0 && (
+			{hasIngredients && (
 				<div className={styles.orderSection}>
 					<div className={styles.totalContainer}>
 						<p className="text text_type_digits-medium">{totalPrice}</p>

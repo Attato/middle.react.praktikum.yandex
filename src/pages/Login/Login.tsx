@@ -7,6 +7,8 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { InputProps } from '../../types';
+
 import { loginUser, clearError } from '../../services/slices/authSlice';
 
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
@@ -81,7 +83,7 @@ const Login = () => {
 						size={'default'}
 						required
 						disabled={isLoading}
-						{...({} as any)}
+						{...({} as InputProps)}
 					/>
 				</div>
 
@@ -100,7 +102,7 @@ const Login = () => {
 						size={'default'}
 						required
 						disabled={isLoading}
-						{...({} as any)}
+						{...({} as InputProps)}
 					/>
 				</div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import { Ingredient } from '../../types';
 
 import styles from './styles.module.css';
 
-const IngredientDetails: React.FC = () => {
+const IngredientDetails: FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { items } = useAppSelector((state) => state.ingredients);
 
@@ -47,6 +47,7 @@ const IngredientDetails: React.FC = () => {
 						<p className="text text_type_main-default text_color_inactive">
 							{item.label}
 						</p>
+
 						<p className="text text_type_digits-default text_color_inactive">
 							{item.value}
 						</p>

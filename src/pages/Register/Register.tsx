@@ -5,6 +5,8 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { InputProps } from '../../types';
+
 import { clearError, registerUser } from '../../services/slices/authSlice';
 
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
@@ -81,7 +83,7 @@ const Register = () => {
 						size={'default'}
 						required
 						disabled={isLoading}
-						{...({} as any)}
+						{...({} as InputProps)}
 					/>
 				</div>
 
@@ -97,7 +99,7 @@ const Register = () => {
 						size={'default'}
 						required
 						disabled={isLoading}
-						{...({} as any)}
+						{...({} as InputProps)}
 					/>
 				</div>
 
@@ -116,7 +118,7 @@ const Register = () => {
 						size={'default'}
 						required
 						disabled={isLoading}
-						{...({} as any)}
+						{...({} as InputProps)}
 					/>
 				</div>
 

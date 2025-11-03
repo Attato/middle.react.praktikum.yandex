@@ -1,8 +1,9 @@
+import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../services/hooks';
 
 interface ProtectedRouteProps {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {

@@ -36,6 +36,7 @@ const App = () => {
 
 			<Routes location={background || location}>
 				<Route path="/" element={<Constructor />} />
+
 				<Route
 					path="/login"
 					element={
@@ -44,6 +45,7 @@ const App = () => {
 						</AuthRoute>
 					}
 				/>
+
 				<Route
 					path="/register"
 					element={
@@ -52,6 +54,7 @@ const App = () => {
 						</AuthRoute>
 					}
 				/>
+
 				<Route
 					path="/forgot-password"
 					element={
@@ -60,6 +63,7 @@ const App = () => {
 						</AuthRoute>
 					}
 				/>
+
 				<Route
 					path="/reset-password"
 					element={
@@ -68,6 +72,7 @@ const App = () => {
 						</AuthRoute>
 					}
 				/>
+
 				<Route
 					path="/profile"
 					element={
@@ -76,7 +81,9 @@ const App = () => {
 						</ProtectedRoute>
 					}
 				/>
+
 				<Route path="/ingredients/:id" element={<IngredientDetailsPage />} />
+
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 
