@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, FC } from 'react';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -20,11 +20,17 @@ interface CategoryProps {
 	counts: Record<string, number>;
 }
 
-const IngredientCard: React.FC<{
+interface IngredientCardProps {
 	ingredient: Ingredient;
 	onClick: () => void;
 	count?: number;
-}> = ({ ingredient, onClick, count = 0 }) => {
+}
+
+const IngredientCard: FC<IngredientCardProps> = ({
+	ingredient,
+	onClick,
+	count = 0,
+}) => {
 	const ref = useRef<HTMLDivElement>(null);
 
 	const [, dragRef] = useDrag({
@@ -53,7 +59,7 @@ const IngredientCard: React.FC<{
 	);
 };
 
-export const RenderCategory: React.FC<CategoryProps> = ({
+export const RenderCategory: FC<CategoryProps> = ({
 	id,
 	title,
 	items,

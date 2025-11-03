@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import type { Ingredient } from '../../types';
 
 import styles from './styles.module.css';
 
-const IngredientDetailsPage: React.FC = () => {
+const IngredientDetailsPage: FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { items, loading } = useAppSelector((state) => state.ingredients);
 	const ingredient = items.find((item: Ingredient) => item._id === id);
@@ -27,6 +27,7 @@ const IngredientDetailsPage: React.FC = () => {
 		<main className={styles.container}>
 			<div className={styles.content}>
 				<h1 className="text text_type_main-large mb-8">Детали ингредиента</h1>
+
 				<IngredientDetails />
 			</div>
 		</main>

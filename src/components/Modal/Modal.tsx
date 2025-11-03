@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, FC, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
@@ -8,11 +8,11 @@ import styles from './styles.module.css';
 
 interface ModalProps {
 	onClose: () => void;
-	children: React.ReactNode;
+	children: ReactNode;
 	title?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ onClose, children, title }) => {
+const Modal: FC<ModalProps> = ({ onClose, children, title }) => {
 	const modalRoot = document.getElementById('modal-root');
 
 	useEffect(() => {
@@ -46,6 +46,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children, title }) => {
 			</div>
 			{children}
 		</ModalOverlay>,
+
 		modalRoot
 	);
 };

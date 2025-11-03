@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentType } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ export type LinkItem = {
 	id: string;
 	label: string;
 	href: string;
-	Icon: React.ComponentType<{ type: 'primary' | 'secondary' }>;
+	Icon: ComponentType<{ type: 'primary' | 'secondary' }>;
 	section: 'left' | 'right';
 };
 

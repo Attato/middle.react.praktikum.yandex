@@ -4,7 +4,7 @@ import {
 	IRegisterData,
 	ILoginData,
 	IAuthResponse,
-	ILogoutResponse,
+	ISuccessResponse,
 	IUpdateTokenResponse,
 	IUserResponse,
 	IUpdateProfileData,
@@ -30,7 +30,7 @@ export const login = (data: ILoginData): Promise<IAuthResponse> => {
 	});
 };
 
-export const logout = (token: string): Promise<ILogoutResponse> => {
+export const logout = (token: string): Promise<ISuccessResponse> => {
 	return request('/auth/logout', {
 		method: 'POST',
 		headers: {

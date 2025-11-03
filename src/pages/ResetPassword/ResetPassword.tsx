@@ -7,6 +7,10 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { InputProps } from '../../types';
+
+import { ISuccessResponse } from '../../services/types/authTypes';
+
 import { request } from '../../utils/api';
 
 import styles from './styles.module.css';
@@ -55,16 +59,13 @@ const ResetPassword = () => {
 		setError('');
 
 		try {
-			const data = await request<{ success: boolean; message?: string }>(
-				'/password-reset',
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ password, token }),
-				}
-			);
+			const data = await request<ISuccessResponse>('/password-reset', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ password, token }),
+			});
 
 			if (data.success) {
 				localStorage.removeItem('resetPasswordAllowed');
@@ -75,8 +76,12 @@ const ResetPassword = () => {
 			} else {
 				setError(data.message || 'Произошла ошибка при сбросе пароля');
 			}
-		} catch (err: any) {
-			setError(err.message || 'Ошибка сети. Попробуйте еще раз.');
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message);
+			} else {
+				setError('Ошибка сети. Попробуйте еще раз.');
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -110,7 +115,7 @@ const ResetPassword = () => {
 							errorText={''}
 							size={'default'}
 							disabled={isLoading}
-							{...({} as any)}
+							{...({} as InputProps)}
 						/>
 					</div>
 
@@ -125,7 +130,7 @@ const ResetPassword = () => {
 							errorText={''}
 							size={'default'}
 							disabled={isLoading}
-							{...({} as any)}
+							{...({} as InputProps)}
 						/>
 					</div>
 

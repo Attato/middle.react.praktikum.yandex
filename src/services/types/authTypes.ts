@@ -66,9 +66,9 @@ export interface IAuthResponse {
 	refreshToken: string;
 }
 
-export interface ILogoutResponse {
+export interface ISuccessResponse {
 	success: boolean;
-	message: string;
+	message?: string;
 }
 
 export interface IUpdateTokenResponse {

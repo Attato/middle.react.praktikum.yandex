@@ -1,12 +1,12 @@
-import React from 'react';
+import { FC, ReactNode } from 'react';
 import styles from './styles.module.css';
 
 interface ModalOverlayProps {
 	onClick?: () => void;
-	children?: React.ReactNode;
+	children?: ReactNode;
 }
 
-const ModalOverlay: React.FC<ModalOverlayProps> = ({ onClick, children }) => {
+const ModalOverlay: FC<ModalOverlayProps> = ({ onClick, children }) => {
 	return (
 		<div className={styles.modalOverlay} onClick={onClick}>
 			<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
