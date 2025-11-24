@@ -29,12 +29,6 @@ import { Ingredient } from '../../types';
 
 import styles from './styles.module.css';
 
-interface DraggedIngredient {
-	type: 'ingredient';
-	id: string;
-	ingredient: Ingredient;
-}
-
 const BurgerConstructor: FC = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
@@ -51,10 +45,10 @@ const BurgerConstructor: FC = () => {
 
 	const dropTargetRef = useRef<HTMLDivElement>(null);
 
-	const [, drop] = useDrop<DraggedIngredient, void, unknown>({
+	const [, drop] = useDrop<Ingredient, void, unknown>({
 		accept: 'ingredient',
 		drop: (item) => {
-			dispatch(addIngredient(item.ingredient));
+			dispatch(addIngredient(item));
 		},
 	});
 
@@ -85,6 +79,7 @@ const BurgerConstructor: FC = () => {
 				fillings,
 				totalPrice,
 			};
+
 			localStorage.setItem('pendingOrder', JSON.stringify(burgerState));
 
 			navigate('/login', {
@@ -101,6 +96,7 @@ const BurgerConstructor: FC = () => {
 			...fillings.map((f) => f._id),
 			bun._id,
 		];
+
 		dispatch(createOrder({ ingredients: ingredientIds }));
 
 		setIsOrderModalOpen(true);
@@ -192,7 +188,7 @@ const BurgerConstructor: FC = () => {
 						<p
 							className={`${styles.textCenter} text text_type_main-medium pt-30 pb-30`}
 						>
-							Заказ загружается, подождите немного...
+							Заказ загружается, подождите секунд 10-15
 						</p>
 					) : (
 						<OrderDetails orderNumber={orderNumber} />

@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { request } from '../../utils/api';
+import { addOrder } from './ordersSlice';
+import type { AppDispatch } from '../store';
 
 interface OrderState {
 	orderNumber: number | null;
@@ -16,6 +18,12 @@ interface OrderResponse {
 	success: boolean;
 	order: {
 		number: number;
+		_id: string;
+		name: string;
+		ingredients: string[];
+		status: 'created' | 'pending' | 'done';
+		createdAt: string;
+		updatedAt: string;
 	};
 }
 
@@ -25,17 +33,34 @@ const initialState: OrderState = {
 	error: null,
 };
 
-export const createOrder = createAsyncThunk(
-	'order/createOrder',
-	async (payload: OrderPayload) => {
-		const data = await request<OrderResponse>('/orders', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(payload),
-		});
-		return data.order.number;
-	}
-);
+export const createOrder = createAsyncThunk<
+	number,
+	OrderPayload,
+	{ dispatch: AppDispatch }
+>('order/createOrder', async (payload: OrderPayload, { dispatch }) => {
+	const data = await request<OrderResponse>('/orders', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: localStorage.getItem('accessToken') || '',
+		},
+		body: JSON.stringify(payload),
+	});
+
+	const tempOrder = {
+		_id: data.order._id,
+		number: data.order.number,
+		name: data.order.name,
+		ingredients: data.order.ingredients,
+		status: data.order.status as 'created' | 'pending' | 'done',
+		createdAt: data.order.createdAt,
+		updatedAt: data.order.updatedAt,
+	};
+
+	dispatch(addOrder(tempOrder));
+
+	return data.order.number;
+});
 
 const orderSlice = createSlice({
 	name: 'order',

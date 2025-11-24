@@ -1,6 +1,6 @@
 import { useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
 
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 
 import {
 	Input,
@@ -153,9 +153,87 @@ const Profile = () => {
 		});
 	};
 
+	const renderProfileForm = () => (
+		<form onSubmit={handleSubmit}>
+			{error && (
+				<div className={`${styles.error} mb-6`}>
+					<p className="text text_type_main-default">{error}</p>
+				</div>
+			)}
+
+			<div className={`${styles.inputContainer} mb-6`}>
+				<Input
+					type={'text'}
+					placeholder={'Имя'}
+					onChange={handleNameChange}
+					icon={'EditIcon'}
+					value={name}
+					ref={nameRef}
+					onIconClick={onNameIconClick}
+					onBlur={handleNameBlur}
+					disabled={!isEditingName || isLoading}
+					{...({} as InputProps)}
+				/>
+			</div>
+
+			<div className={`${styles.inputContainer} mb-6`}>
+				<Input
+					type={'email'}
+					placeholder={'Логин'}
+					onChange={handleEmailChange}
+					icon={'EditIcon'}
+					value={email}
+					ref={emailRef}
+					onIconClick={onEmailIconClick}
+					onBlur={handleEmailBlur}
+					disabled={!isEditingEmail || isLoading}
+					{...({} as InputProps)}
+				/>
+			</div>
+
+			<div className={`${styles.inputContainer} mb-6`}>
+				<Input
+					type={'password'}
+					placeholder={'Пароль'}
+					onChange={handlePasswordChange}
+					icon={'EditIcon'}
+					value={password}
+					ref={passwordRef}
+					onIconClick={onPasswordIconClick}
+					onBlur={handlePasswordBlur}
+					disabled={!isEditingPassword || isLoading}
+					{...({} as InputProps)}
+				/>
+			</div>
+
+			{hasChanges && (
+				<div className={styles.buttons}>
+					<Button
+						htmlType="button"
+						type="secondary"
+						size="medium"
+						onClick={handleCancel}
+						disabled={isLoading}
+					>
+						Отмена
+					</Button>
+
+					<Button
+						htmlType="submit"
+						type="primary"
+						size="medium"
+						disabled={isLoading}
+					>
+						{isLoading ? 'Сохранение...' : 'Сохранить'}
+					</Button>
+				</div>
+			)}
+		</form>
+	);
+
 	return (
 		<main className={styles.container}>
-			<form className={styles.content} onSubmit={handleSubmit}>
+			<div className={styles.content}>
 				<div className={styles.leftSide}>
 					{links.map((link) =>
 						link.isLogout ? (
@@ -183,87 +261,16 @@ const Profile = () => {
 					)}
 
 					<p className="text text_type_main-default text_color_inactive mt-20">
-						В этом разделе вы можете <br />
-						изменить свои персональные данные
+						{currentPath === '/profile/orders'
+							? 'В этом разделе вы можете просмотреть свою историю заказов'
+							: 'В этом разделе вы можете изменить свои персональные данные'}
 					</p>
 				</div>
 
 				<div className={styles.rightSide}>
-					{error && (
-						<div className={`${styles.error} mb-6`}>
-							<p className="text text_type_main-default">{error}</p>
-						</div>
-					)}
-
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={'text'}
-							placeholder={'Имя'}
-							onChange={handleNameChange}
-							icon={'EditIcon'}
-							value={name}
-							ref={nameRef}
-							onIconClick={onNameIconClick}
-							onBlur={handleNameBlur}
-							disabled={!isEditingName || isLoading}
-							{...({} as InputProps)}
-						/>
-					</div>
-
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={'email'}
-							placeholder={'Логин'}
-							onChange={handleEmailChange}
-							icon={'EditIcon'}
-							value={email}
-							ref={emailRef}
-							onIconClick={onEmailIconClick}
-							onBlur={handleEmailBlur}
-							disabled={!isEditingEmail || isLoading}
-							{...({} as InputProps)}
-						/>
-					</div>
-
-					<div className={`${styles.inputContainer} mb-6`}>
-						<Input
-							type={'password'}
-							placeholder={'Пароль'}
-							onChange={handlePasswordChange}
-							icon={'EditIcon'}
-							value={password}
-							ref={passwordRef}
-							onIconClick={onPasswordIconClick}
-							onBlur={handlePasswordBlur}
-							disabled={!isEditingPassword || isLoading}
-							{...({} as InputProps)}
-						/>
-					</div>
-
-					{hasChanges && (
-						<div className={styles.buttons}>
-							<Button
-								htmlType="button"
-								type="secondary"
-								size="medium"
-								onClick={handleCancel}
-								disabled={isLoading}
-							>
-								Отмена
-							</Button>
-
-							<Button
-								htmlType="submit"
-								type="primary"
-								size="medium"
-								disabled={isLoading}
-							>
-								{isLoading ? 'Сохранение...' : 'Сохранить'}
-							</Button>
-						</div>
-					)}
+					{currentPath === '/profile' ? renderProfileForm() : <Outlet />}
 				</div>
-			</form>
+			</div>
 		</main>
 	);
 };
