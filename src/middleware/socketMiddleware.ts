@@ -14,34 +14,37 @@ export const socketMiddleware = (): Middleware => {
 	return (store) => {
 		let socket: WebSocket | null = null;
 
-		return (next) => (action: any) => {
+		return (next) => (action) => {
 			const { dispatch, getState } = store;
 
 			if (wsConnectionStart.match(action)) {
-				const state = getState() as any;
+				const state = getState();
 				const { auth } = state;
 
 				const accessToken = auth.accessToken;
+				const withAuth = action.payload?.withAuth || false;
+				const endpoint = action.payload.endpoint;
 
 				let url: string;
 
-				if (accessToken && action.payload?.withAuth) {
+				if (accessToken && withAuth) {
 					const token = accessToken.replace('Bearer ', '');
-					url = `${WS_URL}/orders?token=${token}`;
+
+					url = `${WS_URL}${endpoint}?token=${token}`;
 				} else {
-					url = `${WS_URL}/orders/all`;
+					url = `${WS_URL}${endpoint}`;
 				}
 
 				try {
 					socket = new WebSocket(url);
 
 					socket.onopen = () => {
-						console.log('WebSocket подключен');
+						console.log('WebSocket подключен к:', url);
 						dispatch(wsConnectionSuccess());
 					};
 
-					socket.onerror = () => {
-						console.error('WebSocket ошибка');
+					socket.onerror = (error) => {
+						console.error('WebSocket ошибка:', error);
 						dispatch(wsConnectionError('WebSocket connection failed'));
 					};
 
@@ -57,7 +60,7 @@ export const socketMiddleware = (): Middleware => {
 					};
 
 					socket.onclose = (event) => {
-						console.log('WebSocket закрыт: ', event.code);
+						console.log('WebSocket закрыт: ', event.code, event.reason);
 						dispatch(wsConnectionClosed());
 					};
 				} catch (error) {
