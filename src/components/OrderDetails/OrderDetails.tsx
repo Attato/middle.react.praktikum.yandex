@@ -2,14 +2,14 @@ import { FC } from 'react';
 import styles from './styles.module.css';
 
 interface OrderDetailsProps {
-	orderNumber: number | null;
+	orderNumber: number | string | null;
 }
 
 const OrderDetails: FC<OrderDetailsProps> = ({ orderNumber }) => {
 	return (
 		<div className={styles.modalContent}>
 			<p className={`text text_type_digits-large ${styles.orderId} mt-4`}>
-				{orderNumber ?? '---'}
+				{orderNumber}
 			</p>
 
 			<p className="text text_type_main-medium pt-8">Идентификатор заказа</p>
