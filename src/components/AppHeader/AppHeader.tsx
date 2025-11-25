@@ -7,7 +7,7 @@ import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
 import { renderLinks } from './utils/renderLinks';
 import { links } from './utils/links';
 
-import { useAppSelector } from '../../services/hooks';
+import { useAppSelector } from '../../hooks/hooks';
 
 import styles from './styles.module.css';
 

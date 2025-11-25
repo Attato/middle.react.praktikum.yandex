@@ -1,6 +1,4 @@
-import { useSelector } from 'react-redux';
-
-import { RootState } from '../services/store';
+import { useAppSelector } from './hooks';
 
 import {
 	calculateOrderPrice,
@@ -18,11 +16,9 @@ export const useOrders = () => {
 		error,
 		wsConnected,
 		isUserOrders,
-	} = useSelector((state: RootState) => state.orders);
+	} = useAppSelector((state) => state.orders);
 
-	const { items: ingredients } = useSelector(
-		(state: RootState) => state.ingredients
-	);
+	const { items: ingredients } = useAppSelector((state) => state.ingredients);
 
 	const displayOrders = isUserOrders ? userOrders : orders;
 

@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
-import { useAppSelector } from '../../services/hooks';
+import { useAppSelector } from '../../hooks/hooks';
 
 import { Ingredient } from '../../types';
 

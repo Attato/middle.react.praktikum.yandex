@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { useAppSelector } from '../../services/hooks';
+import { useAppSelector } from '../../hooks/hooks';
 
 import { scrollToSection, getClosestSection } from './scrollToSection';
 import { RenderCategory } from './renderCategory';
