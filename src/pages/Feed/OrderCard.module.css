@@ -1,0 +1,84 @@
+.orderLink {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+
+.order {
+	background: #1c1c21;
+	border-radius: 40px;
+	padding: 24px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.order:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.orderTitle {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.orderName {
+	margin-top: 24px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 100%;
+}
+
+.orderContent {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 24px;
+}
+
+.orderPrice {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.ingredientsContainer {
+	position: relative;
+	display: flex;
+	height: 64px;
+}
+
+.ingredientIcon {
+	position: absolute;
+	width: 66px;
+	height: 66px;
+	border-radius: 50%;
+	background: linear-gradient(60deg, #801ab3 0%, #4c4cff 100%);
+	padding: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ingredientImage {
+	width: 64px;
+	height: 64px;
+	object-fit: cover;
+	border-radius: 50%;
+	background: #1c1c21;
+}
+
+.remainingOverlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(28, 28, 33, 0.6);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

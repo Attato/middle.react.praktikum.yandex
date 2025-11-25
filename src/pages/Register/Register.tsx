@@ -9,7 +9,7 @@ import { InputProps } from '../../types';
 
 import { clearError, registerUser } from '../../services/slices/authSlice';
 
-import { useAppDispatch, useAppSelector } from '../../services/hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 import styles from './styles.module.css';
 

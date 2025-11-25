@@ -1,0 +1,65 @@
+.content {
+	max-width: 1240px;
+	min-height: calc(100vh - 80px - 88px);
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.sectionWrap {
+	display: flex;
+	margin-top: 20px;
+	gap: 60px;
+}
+
+.section,
+.rightSection {
+	min-width: 608px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	height: 852px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.section:has(> :nth-child(3)) {
+	padding-right: 8px;
+}
+
+.rightSection {
+	gap: 60px;
+}
+
+.orderPrice {
+	display: flex;
+	gap: 8px;
+	height: fit-content;
+}
+
+.ordersInfo {
+	display: flex;
+}
+
+.ordersColumn {
+	display: flex;
+	flex-direction: column;
+	max-width: 272px;
+	width: 100%;
+}
+
+.completed,
+.inProgress {
+	display: flex;
+	flex-direction: column;
+	margin-top: 24px;
+}
+
+.completed p {
+	color: #00cccc;
+}
+
+.shining {
+	text-shadow: 0px 4px 32px rgba(51, 51, 255, 0.5),
+		0px 0px 8px rgba(51, 51, 255, 0.25), 0px 0px 16px rgba(51, 51, 255, 0.25);
+}

@@ -1,0 +1,16 @@
+.ordersContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	max-height: calc(100vh - 80px - 88px - 100px);
+	overflow-y: auto;
+	padding-right: 8px;
+}
+
+.noOrders {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+	text-align: center;
+}

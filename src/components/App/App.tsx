@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 import AppHeader from '../AppHeader/AppHeader';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
+import OrderDetails from '../OrderDetails/OrderDetails';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import AuthRoute from '../AuthRoute/AuthRoute';
 
@@ -17,17 +18,27 @@ import Register from '../../pages/Register/Register';
 import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword/ResetPassword';
 import Profile from '../../pages/Profile/Profile';
+import ProfileOrders from '../../pages/ProfileOrders/ProfileOrders';
 import IngredientDetailsPage from '../../pages/IngredientDetailsPage/IngredientDetailsPage';
+import Feed from '../../pages/Feed/Feed';
+import OrderPage from '../../pages/OrderPage/OrderPage';
 import NotFound from '../../pages/NotFound/NotFound';
+
+import { clearOrder, restoreOrder } from '../../services/slices/orderSlice';
+import { clearBurger } from '../../services/slices/burgerSlice';
 
 const App = () => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 
+	const { orderNumber, loading } = useAppSelector((state) => state.order);
+
 	const background = location.state?.background;
 
 	useEffect(() => {
 		dispatch(fetchIngredients());
+
+		dispatch(restoreOrder());
 	}, [dispatch]);
 
 	return (
@@ -80,8 +91,22 @@ const App = () => {
 							<Profile />
 						</ProtectedRoute>
 					}
+				>
+					<Route index element={<div />} />
+					<Route path="orders" element={<ProfileOrders />} />
+				</Route>
+
+				<Route
+					path="/profile/orders/:id"
+					element={
+						<ProtectedRoute>
+							<OrderPage />
+						</ProtectedRoute>
+					}
 				/>
 
+				<Route path="/feed" element={<Feed />} />
+				<Route path="/feed/:id" element={<OrderPage />} />
 				<Route path="/ingredients/:id" element={<IngredientDetailsPage />} />
 
 				<Route path="*" element={<NotFound />} />
@@ -98,6 +123,41 @@ const App = () => {
 							>
 								<IngredientDetails />
 							</Modal>
+						}
+					/>
+
+					<Route
+						path="/order-details"
+						element={
+							<Modal
+								onClose={() => {
+									window.history.back();
+									dispatch(clearOrder());
+									dispatch(clearBurger());
+								}}
+							>
+								<OrderDetails orderNumber={loading ? '...' : orderNumber} />
+							</Modal>
+						}
+					/>
+
+					<Route
+						path="/feed/:id"
+						element={
+							<Modal onClose={() => window.history.back()}>
+								<OrderPage />
+							</Modal>
+						}
+					/>
+
+					<Route
+						path="/profile/orders/:id"
+						element={
+							<ProtectedRoute>
+								<Modal onClose={() => window.history.back()}>
+									<OrderPage />
+								</Modal>
+							</ProtectedRoute>
 						}
 					/>
 				</Routes>

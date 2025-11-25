@@ -21,6 +21,12 @@ const burgerSlice = createSlice({
 	initialState,
 	reducers: {
 		addIngredient: (state, action: PayloadAction<Ingredient>) => {
+			if (!action.payload) {
+				console.error('addIngredient action called without payload');
+
+				return;
+			}
+
 			if (action.payload.type === 'bun') {
 				state.bun = action.payload;
 			} else {

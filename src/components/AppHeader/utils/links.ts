@@ -17,7 +17,7 @@ export const links: LinkItem[] = [
 	{
 		id: 'orders',
 		label: 'Лента заказов',
-		href: '/',
+		href: '/feed',
 		Icon: ListIcon,
 		section: 'left',
 	},
