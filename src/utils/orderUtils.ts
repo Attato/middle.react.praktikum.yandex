@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { RootState } from '../services/store';
 import { Ingredient } from '../types';
 
 import {
@@ -62,13 +63,21 @@ export const getOrderStatusInfo = (status: string) => {
 };
 
 export const useWebSocketConnection = (withAuth: boolean = false) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
+
+	const { wsConnected } = useAppSelector((state: RootState) => state.orders);
 
 	useEffect(() => {
-		dispatch(wsConnectionStart({ withAuth }));
+		const endpoint = withAuth ? '/orders' : '/orders/all';
+
+		if (!wsConnected) {
+			dispatch(wsConnectionStart({ withAuth, endpoint }));
+		}
 
 		return () => {
-			dispatch(wsConnectionClosed());
+			if (wsConnected) {
+				dispatch(wsConnectionClosed());
+			}
 		};
-	}, [dispatch, withAuth]);
+	}, [dispatch, withAuth, wsConnected]);
 };
