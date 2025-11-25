@@ -7,12 +7,57 @@ import { useOrders } from '../../hooks/useOrders';
 
 import styles from './styles.module.css';
 
+import { Ingredient, Order } from '../../types';
+
+interface UniqueIngredient extends Ingredient {
+	count: number;
+}
+
+interface StatusInfo {
+	text: string;
+	className?: string;
+}
+
+interface LoadingStateProps {
+	message: string;
+}
+
+interface ErrorStateProps {
+	message: string;
+}
+
+interface OrderContentProps {
+	order: Order;
+	orderPrice: number;
+	uniqueIngredients: UniqueIngredient[];
+	statusInfo: StatusInfo;
+	isModal: boolean;
+}
+
+interface OrderIngredientsProps {
+	ingredients: UniqueIngredient[];
+	isModal: boolean;
+}
+
+interface IngredientItemProps {
+	ingredient: UniqueIngredient;
+}
+
+interface OrderFooterProps {
+	createdAt: string;
+	price: number;
+	isModal: boolean;
+}
+
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
 	const location = useLocation();
 
 	const isUserOrderPage = location.pathname.includes('/profile/orders');
-	useWebSocketConnection(isUserOrderPage);
+	const background = location.state?.background;
+	const isModal = Boolean(background);
+
+	useWebSocketConnection(isUserOrderPage && !isModal);
 
 	const {
 		orders,
@@ -24,12 +69,9 @@ const OrderPage = () => {
 		getOrderStatusInfo,
 	} = useOrders();
 
-	const background = location.state?.background;
-	const isModal = Boolean(background);
-
 	const order = isUserOrderPage
-		? userOrders.find((order) => order._id === id)
-		: orders.find((order) => order._id === id);
+		? userOrders.find((order: Order) => order._id === id)
+		: orders.find((order: Order) => order._id === id);
 
 	if (loading && !order) {
 		return <LoadingState message="Загрузка заказа..." />;
@@ -64,13 +106,13 @@ const OrderPage = () => {
 	return <main className={styles.content}>{content}</main>;
 };
 
-const LoadingState = ({ message }: { message: string }) => (
+const LoadingState = ({ message }: LoadingStateProps) => (
 	<div className={`${styles.container} ${styles.center}`}>
 		<div className="text text_type_main-default mt-20">{message}</div>
 	</div>
 );
 
-const ErrorState = ({ message }: { message: string }) => (
+const ErrorState = ({ message }: ErrorStateProps) => (
 	<div className={`${styles.container} ${styles.center}`}>
 		<div className="text text_type_main-default mt-20 text_color_error">
 			{message}
@@ -84,7 +126,7 @@ const OrderContent = ({
 	uniqueIngredients,
 	statusInfo,
 	isModal,
-}: any) => (
+}: OrderContentProps) => (
 	<div className={isModal ? '' : styles.pageContent}>
 		{!isModal && (
 			<p className={`text text_type_digits-default ${styles.orderNumber}`}>
@@ -118,7 +160,7 @@ const OrderContent = ({
 	</div>
 );
 
-const OrderIngredients = ({ ingredients, isModal }: any) => (
+const OrderIngredients = ({ ingredients, isModal }: OrderIngredientsProps) => (
 	<div className={`${styles.section} ${isModal ? 'mt-6' : 'mt-10'}`}>
 		<p className="text text_type_main-medium">Состав:</p>
 		<div
@@ -126,14 +168,14 @@ const OrderIngredients = ({ ingredients, isModal }: any) => (
 				isModal ? styles.modalIngredientsList : ''
 			}`}
 		>
-			{ingredients.map((ingredient: any) => (
+			{ingredients.map((ingredient: UniqueIngredient) => (
 				<IngredientItem key={ingredient._id} ingredient={ingredient} />
 			))}
 		</div>
 	</div>
 );
 
-const IngredientItem = ({ ingredient }: any) => (
+const IngredientItem = ({ ingredient }: IngredientItemProps) => (
 	<div className={styles.ingredientItem}>
 		<div className={styles.ingredientInfo}>
 			<div className={styles.ingredientImageContainer}>
@@ -157,7 +199,7 @@ const IngredientItem = ({ ingredient }: any) => (
 	</div>
 );
 
-const OrderFooter = ({ createdAt, price, isModal }: any) => (
+const OrderFooter = ({ createdAt, price, isModal }: OrderFooterProps) => (
 	<div className={`${styles.footer} ${isModal ? 'mt-6' : 'mt-10'}`}>
 		<div className="text text_type_main-default text_color_inactive">
 			<FormattedDate date={new Date(createdAt)} />

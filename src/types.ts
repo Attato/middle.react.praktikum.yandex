@@ -18,6 +18,16 @@ export interface Ingredient {
 	uniqueKey: string;
 }
 
+export type Order = {
+	_id: string;
+	number: number;
+	name: string;
+	ingredients: string[];
+	status: 'created' | 'pending' | 'done';
+	createdAt: string;
+	updatedAt: string;
+};
+
 export type InputProps = Omit<
 	ComponentProps<typeof Input>,
 	'type' | 'value' | 'onChange'

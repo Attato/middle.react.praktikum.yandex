@@ -1,8 +1,70 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, Location } from 'react-router-dom';
+
 import { useWebSocketConnection } from '../../utils/orderUtils';
+
 import { useOrders } from '../../hooks/useOrders';
+
 import OrderCard from './OrderCard';
+
+import type { Ingredient, Order } from '../../types';
+
 import styles from './styles.module.css';
+
+interface LoadingStateProps {
+	message: string;
+}
+
+interface ErrorStateProps {
+	message: string;
+}
+
+interface OrdersListProps {
+	orders: Order[];
+	calculateOrderPrice: (ingredients: string[]) => number;
+	ingredients: Ingredient[];
+	isUserOrders: boolean;
+	location: Location;
+}
+
+interface OrderNumberProps {
+	number: number;
+	isCompleted: boolean;
+}
+
+interface OrdersColumnProps {
+	title: string;
+	orders: Order[];
+	isCompleted: boolean;
+}
+
+interface OrdersStatusGridProps {
+	completedOrders: Order[];
+	inProgressOrders: Order[];
+}
+
+interface TotalStatsProps {
+	title: string;
+	value: number;
+}
+
+interface OrdersStatsProps {
+	completedOrders: Order[];
+	inProgressOrders: Order[];
+	total: number;
+	totalToday: number;
+}
+
+interface FeedContentProps {
+	isUserOrders: boolean;
+	displayOrders: Order[];
+	completedOrders: Order[];
+	inProgressOrders: Order[];
+	total: number;
+	totalToday: number;
+	calculateOrderPrice: (ingredients: string[]) => number;
+	ingredients: Ingredient[];
+	location: Location;
+}
 
 const Feed = () => {
 	const location = useLocation();
@@ -33,7 +95,7 @@ const Feed = () => {
 
 	return (
 		<main className={styles.content}>
-			<FeedHeader isUserOrders={isUserOrders} />
+			<FeedHeader />
 
 			{!wsConnected && <ConnectionState />}
 
@@ -54,11 +116,11 @@ const Feed = () => {
 	);
 };
 
-const LoadingState = ({ message }: { message: string }) => (
+const LoadingState = ({ message }: LoadingStateProps) => (
 	<div className="text text_type_main-default mt-20">{message}</div>
 );
 
-const ErrorState = ({ message }: { message: string }) => (
+const ErrorState = ({ message }: ErrorStateProps) => (
 	<div className="text text_type_main-default mt-20 text_color_error">
 		Ошибка: {message}
 	</div>
@@ -70,10 +132,8 @@ const ConnectionState = () => (
 	</div>
 );
 
-const FeedHeader = ({ isUserOrders }: { isUserOrders: boolean }) => (
-	<p className="text text_type_main-large mt-10">
-		{isUserOrders ? 'История заказов' : 'Лента заказов'}
-	</p>
+const FeedHeader = () => (
+	<p className="text text_type_main-large mt-10">Лента заказов</p>
 );
 
 const FeedContent = ({
@@ -86,7 +146,7 @@ const FeedContent = ({
 	calculateOrderPrice,
 	ingredients,
 	location,
-}: any) => (
+}: FeedContentProps) => (
 	<div className={styles.sectionWrap}>
 		<OrdersList
 			orders={displayOrders}
@@ -113,13 +173,13 @@ const OrdersList = ({
 	ingredients,
 	isUserOrders,
 	location,
-}: any) => (
+}: OrdersListProps) => (
 	<div className={styles.section}>
-		{orders.map((order: any) => (
+		{orders.map((order: Order) => (
 			<OrderCard
 				key={order._id}
 				order={order}
-				calculateOrderPrice={calculateOrderPrice}
+				calculateOrderPrice={() => calculateOrderPrice(order.ingredients)}
 				ingredients={ingredients}
 				linkTo={
 					isUserOrders ? `/profile/orders/${order._id}` : `/feed/${order._id}`
@@ -145,7 +205,7 @@ const OrdersStats = ({
 	inProgressOrders,
 	total,
 	totalToday,
-}: any) => (
+}: OrdersStatsProps) => (
 	<div className={styles.rightSection}>
 		<OrdersStatusGrid
 			completedOrders={completedOrders}
@@ -157,7 +217,10 @@ const OrdersStats = ({
 	</div>
 );
 
-const OrdersStatusGrid = ({ completedOrders, inProgressOrders }: any) => (
+const OrdersStatusGrid = ({
+	completedOrders,
+	inProgressOrders,
+}: OrdersStatusGridProps) => (
 	<div className={styles.ordersInfo}>
 		<OrdersColumn title="Готовы:" orders={completedOrders} isCompleted={true} />
 		<OrdersColumn
@@ -168,11 +231,11 @@ const OrdersStatusGrid = ({ completedOrders, inProgressOrders }: any) => (
 	</div>
 );
 
-const OrdersColumn = ({ title, orders, isCompleted }: any) => (
+const OrdersColumn = ({ title, orders, isCompleted }: OrdersColumnProps) => (
 	<div className={styles.ordersColumn}>
 		<p className="text text_type_main-medium mb-6">{title}</p>
 		<div className={isCompleted ? styles.completed : styles.inProgress}>
-			{orders.slice(0, 10).map((order: any) => (
+			{orders.slice(0, 10).map((order: Order) => (
 				<OrderNumber
 					key={order._id}
 					number={order.number}
@@ -183,7 +246,7 @@ const OrdersColumn = ({ title, orders, isCompleted }: any) => (
 	</div>
 );
 
-const OrderNumber = ({ number, isCompleted }: any) => (
+const OrderNumber = ({ number, isCompleted }: OrderNumberProps) => (
 	<p
 		className={`text text_type_digits-default ${
 			isCompleted ? styles.completedOrderNumber : ''
@@ -193,7 +256,7 @@ const OrderNumber = ({ number, isCompleted }: any) => (
 	</p>
 );
 
-const TotalStats = ({ title, value }: any) => (
+const TotalStats = ({ title, value }: TotalStatsProps) => (
 	<div className={styles.totalStats}>
 		<p className="text text_type_main-medium">{title}</p>
 		<p className={`text text_type_digits-large ${styles.shining}`}>{value}</p>
