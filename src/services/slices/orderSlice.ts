@@ -1,8 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { request } from '../../utils/api';
+
 import { addOrder } from './ordersSlice';
+
 import type { AppDispatch } from '../store';
+
+import { Order } from '../../types';
 
 interface OrderState {
 	orderNumber: number | null;
@@ -16,19 +20,21 @@ interface OrderPayload {
 
 interface OrderResponse {
 	success: boolean;
-	order: {
-		number: number;
-		_id: string;
-		name: string;
-		ingredients: string[];
-		status: 'created' | 'pending' | 'done';
-		createdAt: string;
-		updatedAt: string;
-	};
+	order: Order;
 }
 
+const getStoredOrderNumber = (): number | null => {
+	if (typeof window !== 'undefined') {
+		const stored = localStorage.getItem('lastOrderNumber');
+
+		return stored ? parseInt(stored) : null;
+	}
+
+	return null;
+};
+
 const initialState: OrderState = {
-	orderNumber: null,
+	orderNumber: getStoredOrderNumber(),
 	loading: false,
 	error: null,
 };
@@ -70,6 +76,14 @@ const orderSlice = createSlice({
 			state.orderNumber = null;
 			state.error = null;
 			state.loading = false;
+
+			if (typeof window !== 'undefined') {
+				localStorage.removeItem('lastOrderNumber');
+			}
+		},
+
+		restoreOrder: (state) => {
+			state.orderNumber = getStoredOrderNumber();
 		},
 	},
 	extraReducers: (builder) => {
@@ -83,14 +97,22 @@ const orderSlice = createSlice({
 				(state, action: PayloadAction<number>) => {
 					state.orderNumber = action.payload;
 					state.loading = false;
+
+					if (typeof window !== 'undefined') {
+						localStorage.setItem('lastOrderNumber', action.payload.toString());
+					}
 				}
 			)
 			.addCase(createOrder.rejected, (state, action) => {
 				state.loading = false;
 				state.error = action.error.message || 'Ошибка отправки заказа';
+
+				if (typeof window !== 'undefined') {
+					localStorage.removeItem('lastOrderNumber');
+				}
 			});
 	},
 });
 
-export const { clearOrder } = orderSlice.actions;
+export const { clearOrder, restoreOrder } = orderSlice.actions;
 export default orderSlice.reducer;
