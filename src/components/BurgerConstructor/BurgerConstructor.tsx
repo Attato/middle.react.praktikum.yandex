@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, FC } from 'react';
+import { useRef, useEffect, FC } from 'react';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -10,19 +10,17 @@ import {
 
 import { useDrop } from 'react-dnd';
 
-import { useAppDispatch, useAppSelector } from '../../services/hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+
 import {
 	addIngredient,
 	removeFilling,
 	reorderFillings,
-	clearBurger,
 } from '../../services/slices/burgerSlice';
 
-import { createOrder, clearOrder } from '../../services/slices/orderSlice';
+import { createOrder } from '../../services/slices/orderSlice';
 
 import FillingItem from './FillingItem';
-import Modal from '../Modal/Modal';
-import OrderDetails from '../OrderDetails/OrderDetails';
 
 import type { RootState } from '../../services/store';
 import { Ingredient } from '../../types';
@@ -35,10 +33,6 @@ const BurgerConstructor: FC = () => {
 	const location = useLocation();
 
 	const { bun, fillings } = useAppSelector((state: RootState) => state.burger);
-
-	const { orderNumber, loading } = useAppSelector(
-		(state: RootState) => state.order
-	);
 	const { user, isAuthenticated } = useAppSelector(
 		(state: RootState) => state.auth
 	);
@@ -57,8 +51,6 @@ const BurgerConstructor: FC = () => {
 			drop(dropTargetRef.current);
 		}
 	}, [drop]);
-
-	const [isOrderModalOpen, setIsOrderModalOpen] = useState<boolean>(false);
 
 	const totalPrice: number =
 		(bun ? bun.price * 2 : 0) +
@@ -99,14 +91,9 @@ const BurgerConstructor: FC = () => {
 
 		dispatch(createOrder({ ingredients: ingredientIds }));
 
-		setIsOrderModalOpen(true);
-	};
-
-	const handleCloseOrderModal = (): void => {
-		setIsOrderModalOpen(false);
-		dispatch(clearOrder());
-		dispatch(clearBurger());
-		localStorage.removeItem('pendingOrder');
+		navigate('/order-details', {
+			state: { background: location },
+		});
 	};
 
 	const moveItem = (fromIndex: number, toIndex: number): void => {
@@ -180,20 +167,6 @@ const BurgerConstructor: FC = () => {
 						Оформить заказ
 					</Button>
 				</div>
-			)}
-
-			{isOrderModalOpen && (
-				<Modal onClose={handleCloseOrderModal}>
-					{loading ? (
-						<p
-							className={`${styles.textCenter} text text_type_main-medium pt-30 pb-30`}
-						>
-							Заказ загружается, подождите секунд 10-15
-						</p>
-					) : (
-						<OrderDetails orderNumber={orderNumber} />
-					)}
-				</Modal>
 			)}
 		</div>
 	);

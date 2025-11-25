@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 import AppHeader from '../AppHeader/AppHeader';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
-
+import OrderDetails from '../OrderDetails/OrderDetails';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import AuthRoute from '../AuthRoute/AuthRoute';
 
@@ -24,14 +24,21 @@ import Feed from '../../pages/Feed/Feed';
 import OrderPage from '../../pages/OrderPage/OrderPage';
 import NotFound from '../../pages/NotFound/NotFound';
 
+import { clearOrder, restoreOrder } from '../../services/slices/orderSlice';
+import { clearBurger } from '../../services/slices/burgerSlice';
+
 const App = () => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
+
+	const { orderNumber, loading } = useAppSelector((state) => state.order);
 
 	const background = location.state?.background;
 
 	useEffect(() => {
 		dispatch(fetchIngredients());
+
+		dispatch(restoreOrder());
 	}, [dispatch]);
 
 	return (
@@ -120,6 +127,21 @@ const App = () => {
 					/>
 
 					<Route
+						path="/order-details"
+						element={
+							<Modal
+								onClose={() => {
+									window.history.back();
+									dispatch(clearOrder());
+									dispatch(clearBurger());
+								}}
+							>
+								<OrderDetails orderNumber={loading ? '...' : orderNumber} />
+							</Modal>
+						}
+					/>
+
+					<Route
 						path="/feed/:id"
 						element={
 							<Modal onClose={() => window.history.back()}>
@@ -131,9 +153,11 @@ const App = () => {
 					<Route
 						path="/profile/orders/:id"
 						element={
-							<Modal onClose={() => window.history.back()}>
-								<OrderPage />
-							</Modal>
+							<ProtectedRoute>
+								<Modal onClose={() => window.history.back()}>
+									<OrderPage />
+								</Modal>
+							</ProtectedRoute>
 						}
 					/>
 				</Routes>
