@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 import { useWebSocketConnection } from '../../utils/orderUtils';
 
 import { useOrders } from '../../hooks/useOrders';
@@ -7,6 +9,7 @@ import OrderCard from '../Feed/OrderCard';
 import styles from './styles.module.css';
 
 const ProfileOrders = () => {
+	const location = useLocation();
 	useWebSocketConnection(true);
 
 	const {
@@ -18,13 +21,16 @@ const ProfileOrders = () => {
 		ingredients,
 	} = useOrders();
 
-	if (loading) return <LoadingState message="Загрузка заказов..." />;
+	const orders =
+		Array.isArray(userOrders) && userOrders.length > 0 ? userOrders : [];
 
-	if (error) return <ErrorState message={error} />;
+	if (loading && orders.length === 0)
+		return <LoadingState message="Загрузка заказов..." />;
 
-	if (!wsConnected) return <LoadingState message="Подключение к серверу..." />;
+	if (error && orders.length === 0) return <ErrorState message={error} />;
 
-	const orders = userOrders || [];
+	if (!wsConnected && orders.length === 0)
+		return <LoadingState message="Подключение к серверу..." />;
 
 	return (
 		<div className={styles.ordersContainer}>
@@ -33,8 +39,9 @@ const ProfileOrders = () => {
 					key={order._id}
 					order={order}
 					calculateOrderPrice={calculateOrderPrice}
-					ingredients={ingredients}
+					ingredients={ingredients || []}
 					linkTo={`/profile/orders/${order._id}`}
+					state={{ background: location }}
 				/>
 			))}
 
