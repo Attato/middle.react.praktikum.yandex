@@ -8,8 +8,8 @@ import {
 
 export const useOrders = () => {
 	const {
-		orders,
-		userOrders,
+		orders = [],
+		userOrders = [],
 		total,
 		totalToday,
 		loading,
@@ -18,9 +18,11 @@ export const useOrders = () => {
 		isUserOrders,
 	} = useAppSelector((state) => state.orders);
 
-	const { items: ingredients } = useAppSelector((state) => state.ingredients);
+	const { items: ingredients = [] } = useAppSelector(
+		(state) => state.ingredients
+	);
 
-	const displayOrders = isUserOrders ? userOrders : orders;
+	const displayOrders = (isUserOrders ? userOrders : orders) || [];
 
 	const completedOrders = displayOrders.filter(
 		(order) => order.status === 'done'
@@ -31,8 +33,8 @@ export const useOrders = () => {
 	);
 
 	return {
-		orders,
-		userOrders,
+		orders: orders || [],
+		userOrders: userOrders || [],
 		displayOrders,
 		completedOrders,
 		inProgressOrders,
