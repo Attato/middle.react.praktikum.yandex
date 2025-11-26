@@ -1,4 +1,4 @@
-import reducer, { fetchIngredients } from './ingredientsSlice';
+import reducer, { fetchIngredients, initialState } from './ingredientsSlice';
 import { Ingredient } from '../../types';
 
 jest.mock('../../components/BurgerIngredients/fetchIngredients', () => ({
@@ -6,12 +6,6 @@ jest.mock('../../components/BurgerIngredients/fetchIngredients', () => ({
 }));
 
 describe('ingredientsSlice', () => {
-	const initialState = {
-		items: [] as Ingredient[],
-		loading: false,
-		error: null,
-	};
-
 	const mockIngredients: Ingredient[] = [
 		{
 			_id: '1',

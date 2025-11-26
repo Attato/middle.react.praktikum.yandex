@@ -49,7 +49,7 @@ const saveUserOrdersToStorage = (orders: Order[]) => {
 	}
 };
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
 	orders: [],
 	userOrders: loadUserOrdersFromStorage(),
 	total: 0,

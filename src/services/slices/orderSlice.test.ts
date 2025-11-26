@@ -3,6 +3,7 @@ import reducer, {
 	restoreOrder,
 	createOrder,
 	OrderState,
+	initialState,
 } from './orderSlice';
 
 import { Order } from '../../types';
@@ -27,12 +28,6 @@ beforeAll(() => {
 });
 
 describe('orderSlice', () => {
-	const initialState: OrderState = {
-		orderNumber: null,
-		loading: false,
-		error: null,
-	};
-
 	beforeEach(() => {
 		jest.clearAllMocks();
 	});

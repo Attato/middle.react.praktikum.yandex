@@ -3,6 +3,7 @@ import burgerReducer, {
 	removeFilling,
 	clearBurger,
 	reorderFillings,
+	initialState,
 } from './burgerSlice';
 import { Ingredient } from '../../types';
 
@@ -31,19 +32,13 @@ describe('burgerSlice', () => {
 	test('Должно быть возвращено исходное состояние', () => {
 		const state = burgerReducer(undefined, { type: '@@INIT' });
 
-		expect(state).toEqual({
-			bun: null,
-			fillings: [],
-		});
+		expect(state).toEqual(initialState);
 	});
 
 	test('addIngredient добавляет булочку, если тип "bun"', () => {
 		const bun = mockIngredient({ type: 'bun' });
 
-		const state = burgerReducer(
-			{ bun: null, fillings: [] },
-			addIngredient(bun)
-		);
+		const state = burgerReducer(initialState, addIngredient(bun));
 
 		expect(state.bun).toEqual(bun);
 		expect(state.fillings).toHaveLength(0);
@@ -52,10 +47,7 @@ describe('burgerSlice', () => {
 	test('addIngredient добавляет начинку с uuid, если type != bun', () => {
 		const filling = mockIngredient({ type: 'main' });
 
-		const state = burgerReducer(
-			{ bun: null, fillings: [] },
-			addIngredient(filling)
-		);
+		const state = burgerReducer(initialState, addIngredient(filling));
 
 		expect(state.fillings).toHaveLength(1);
 		expect(state.fillings[0]).toMatchObject({

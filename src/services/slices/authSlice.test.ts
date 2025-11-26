@@ -1,4 +1,9 @@
-import authReducer, { clearError, setTokens, clearTokens } from './authSlice';
+import authReducer, {
+	clearError,
+	setTokens,
+	clearTokens,
+	initialState,
+} from './authSlice';
 import { IAuthState, IUser } from '../types/authTypes';
 
 const mockLocalStorage: Storage = {
@@ -18,15 +23,6 @@ beforeAll(() => {
 });
 
 describe('authSlice', () => {
-	const initialState: IAuthState = {
-		user: null,
-		accessToken: null,
-		refreshToken: null,
-		isLoading: false,
-		error: null,
-		isAuthenticated: false,
-	};
-
 	test('Должно быть возвращено исходное состояние', () => {
 		expect(authReducer(undefined, { type: '@@INIT' })).toEqual(
 			expect.objectContaining({

@@ -33,7 +33,7 @@ const getStoredOrderNumber = (): number | null => {
 	return null;
 };
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
 	orderNumber: getStoredOrderNumber(),
 	loading: false,
 	error: null,

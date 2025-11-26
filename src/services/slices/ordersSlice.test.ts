@@ -8,6 +8,7 @@ import reducer, {
 	clearOrders,
 	saveOrdersToStorage,
 	restoreOrdersFromStorage,
+	initialState,
 	type OrdersResponse,
 } from './ordersSlice';
 
@@ -24,17 +25,6 @@ Object.defineProperty(global, 'localStorage', {
 });
 
 describe('ordersSlice', () => {
-	const initialState = {
-		orders: [],
-		userOrders: [],
-		total: 0,
-		totalToday: 0,
-		loading: false,
-		error: null,
-		wsConnected: false,
-		isUserOrders: false,
-	};
-
 	const sampleOrder: Order = {
 		_id: '1',
 		number: 100,
