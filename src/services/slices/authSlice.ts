@@ -94,7 +94,7 @@ export const updateUserProfile = createAsyncThunk(
 	}
 );
 
-const initialState: IAuthState = {
+export const initialState: IAuthState = {
 	user: null,
 	accessToken: localStorage.getItem('accessToken'),
 	refreshToken: localStorage.getItem('refreshToken'),

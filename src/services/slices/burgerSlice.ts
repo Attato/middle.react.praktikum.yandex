@@ -11,7 +11,7 @@ export interface BurgerState {
 	fillings: BurgerFilling[];
 }
 
-const initialState: BurgerState = {
+export const initialState: BurgerState = {
 	bun: null,
 	fillings: [],
 };

@@ -12,7 +12,7 @@ interface OrdersState {
 	isUserOrders: boolean;
 }
 
-interface OrdersResponse {
+export interface OrdersResponse {
 	success: boolean;
 	orders: Order[];
 	total: number;
@@ -49,7 +49,7 @@ const saveUserOrdersToStorage = (orders: Order[]) => {
 	}
 };
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
 	orders: [],
 	userOrders: loadUserOrdersFromStorage(),
 	total: 0,

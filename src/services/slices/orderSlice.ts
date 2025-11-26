@@ -8,7 +8,7 @@ import type { AppDispatch } from '../store';
 
 import { Order } from '../../types';
 
-interface OrderState {
+export interface OrderState {
 	orderNumber: number | null;
 	loading: boolean;
 	error: string | null;
@@ -33,7 +33,7 @@ const getStoredOrderNumber = (): number | null => {
 	return null;
 };
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
 	orderNumber: getStoredOrderNumber(),
 	loading: false,
 	error: null,
