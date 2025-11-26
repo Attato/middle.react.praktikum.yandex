@@ -7,7 +7,7 @@ import burgerReducer, {
 import { Ingredient } from '../../types';
 
 jest.mock('uuid', () => ({
-	v4: () => 'mock-uuid',
+	v4: () => '12345678-1234-1234-1234-123456789012',
 }));
 
 const mockIngredient = (overrides: Partial<Ingredient>): Ingredient => ({
