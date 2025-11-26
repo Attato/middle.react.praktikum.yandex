@@ -12,7 +12,7 @@ interface OrdersState {
 	isUserOrders: boolean;
 }
 
-interface OrdersResponse {
+export interface OrdersResponse {
 	success: boolean;
 	orders: Order[];
 	total: number;
