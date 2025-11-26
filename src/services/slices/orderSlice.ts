@@ -8,7 +8,7 @@ import type { AppDispatch } from '../store';
 
 import { Order } from '../../types';
 
-interface OrderState {
+export interface OrderState {
 	orderNumber: number | null;
 	loading: boolean;
 	error: string | null;
