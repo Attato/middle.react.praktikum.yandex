@@ -1,6 +1,10 @@
+const testUrl = 'http://localhost:3000/';
+const ingredientCard = 'div[class*="ingredientCard"]';
+const constructorContainer = '.mt-25.pl-4.pr-4.pt-5';
+
 describe('Burger Constructor', () => {
 	beforeEach(() => {
-		cy.visit('http://localhost:3000/');
+		cy.visit(testUrl);
 		cy.get('h2#buns').should('exist');
 	});
 
@@ -15,13 +19,8 @@ describe('Burger Constructor', () => {
 	});
 
 	it('Ингредиенты должны перемещаться в конструктор', () => {
-		cy.get('h2#buns')
-			.parent()
-			.find('div[class*="ingredientCard"]')
-			.first()
-			.as('bunIngredient');
-
-		cy.get('.mt-25.pl-4.pr-4.pt-5').as('constructor');
+		cy.get('h2#buns').parent().find(ingredientCard).first().as('bunIngredient');
+		cy.get(constructorContainer).as('constructor');
 
 		cy.get('@bunIngredient').trigger('dragstart');
 		cy.get('@constructor').trigger('drop');
@@ -36,7 +35,7 @@ describe('Burger Constructor', () => {
 
 		cy.get('h2#buns')
 			.parent()
-			.find('div[class*="ingredientCard"]')
+			.find(ingredientCard)
 			.first()
 			.find('p[class*="text_type_digits-default"]')
 			.invoke('text')
@@ -45,28 +44,31 @@ describe('Burger Constructor', () => {
 
 				cy.get('h2#mains')
 					.parent()
-					.find('div[class*="ingredientCard"]')
+					.find(ingredientCard)
 					.first()
 					.find('p[class*="text_type_digits-default"]')
 					.invoke('text')
 					.then((mainPriceText) => {
 						mainPrice = parseInt(mainPriceText);
-
 						const expectedTotal = bunPrice * 2 + mainPrice;
 
 						cy.get('h2#buns')
 							.parent()
-							.find('div[class*="ingredientCard"]')
+							.find(ingredientCard)
 							.first()
-							.trigger('dragstart');
-						cy.get('.mt-25.pl-4.pr-4.pt-5').trigger('drop');
-
+							.as('bunIngredient');
 						cy.get('h2#mains')
 							.parent()
-							.find('div[class*="ingredientCard"]')
+							.find(ingredientCard)
 							.first()
-							.trigger('dragstart');
-						cy.get('.mt-25.pl-4.pr-4.pt-5').trigger('drop');
+							.as('mainIngredient');
+						cy.get(constructorContainer).as('constructor');
+
+						cy.get('@bunIngredient').trigger('dragstart');
+						cy.get('@constructor').trigger('drop');
+
+						cy.get('@mainIngredient').trigger('dragstart');
+						cy.get('@constructor').trigger('drop');
 
 						cy.get('.text_type_digits-medium')
 							.should('exist')
@@ -76,19 +78,19 @@ describe('Burger Constructor', () => {
 	});
 
 	it('Перенаправление на странциу логина, если пользователь не был аутентифицирован при оформлении заказа', () => {
-		cy.get('h2#buns')
-			.parent()
-			.find('div[class*="ingredientCard"]')
-			.first()
-			.trigger('dragstart');
-		cy.get('.mt-25.pl-4.pr-4.pt-5').trigger('drop');
-
+		cy.get('h2#buns').parent().find(ingredientCard).first().as('bunIngredient');
 		cy.get('h2#mains')
 			.parent()
-			.find('div[class*="ingredientCard"]')
+			.find(ingredientCard)
 			.first()
-			.trigger('dragstart');
-		cy.get('.mt-25.pl-4.pr-4.pt-5').trigger('drop');
+			.as('mainIngredient');
+		cy.get(constructorContainer).as('constructor');
+
+		cy.get('@bunIngredient').trigger('dragstart');
+		cy.get('@constructor').trigger('drop');
+
+		cy.get('@mainIngredient').trigger('dragstart');
+		cy.get('@constructor').trigger('drop');
 
 		cy.contains('Оформить заказ').click();
 
@@ -96,11 +98,7 @@ describe('Burger Constructor', () => {
 	});
 
 	it('Должно открываться модальное окно при нажатии на ингредиент', () => {
-		cy.get('h2#buns')
-			.parent()
-			.find('div[class*="ingredientCard"]')
-			.first()
-			.click();
+		cy.get('h2#buns').parent().find(ingredientCard).first().click();
 
 		cy.get('#modal-root').find('div[class*="modal"]').should('exist');
 		cy.get('#modal-root').find('button').click();
